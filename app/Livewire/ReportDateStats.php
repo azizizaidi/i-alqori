@@ -12,23 +12,27 @@ class ReportDateStats extends BaseWidget
     protected function getStats(): array
     {
         // Sum the allowance_amount for the specified month
-        $earlyAllowance = ReportClass::where('month', '05-2025')
-            ->where('created_at', '<', Carbon::create(2025, 6, 1))
+        $earlyAllowance = ReportClass::where('month', '06-2025')
+            ->where('created_at', '<', Carbon::create(2025, 7, 1))
             ->sum('allowance');
 
-        $lateAllowance = ReportClass::where('month', '05-2025')
-            ->where('created_at', '>=', Carbon::create(2025, 6, 1))
+        $lateAllowance = ReportClass::where('month', '06-2025')
+            ->where('created_at', '>=', Carbon::create(2025, 7, 1))
             ->sum('allowance');
 
             //total allowance current month where status is paid
-            $paidAllowance = ReportClass::where('month', '05-2025')
+            $paidAllowance = ReportClass::where('month', '06-2025')
             ->where('status', 1)
             ->sum('allowance');
-            
+           
+            //total allowance balance where status not paid
+            $unpaidAllowance = ReportClass::where('month', '06-2025')
+            ->where('status', 0)
+            ->sum('allowance');
      
 
         return [
-            Stat::make('Jumlah Elaun Hantar Sebelum 1/6/25', 'RM' . number_format($earlyAllowance, 2))
+            Stat::make('Jumlah Elaun Hantar Sebelum 1/7/25', 'RM' . number_format($earlyAllowance, 2))
                 ->color('success')
                 ->extraAttributes([
                     // Add attributes if needed
@@ -39,7 +43,7 @@ class ReportDateStats extends BaseWidget
                 ]),
 
                 //stat make total allowance current month where status is paid
-            Stat::make('Jumlah Elaun Dah Bayar', 'RM' . number_format($paidAllowance, 2))
+            Stat::make('Jumlah Elaun Belum Bayar', 'RM' . number_format($unpaidAllowance, 2))
                 ->extraAttributes([
                     // Add attributes if needed
                 ]),

@@ -199,6 +199,7 @@ class ListTransaction extends Component implements HasForms, HasTable
                     '03-2025' => 'Mac 2025',
                     '04-2025' => 'April 2025',
                     '05-2025' => 'Mei 2025',
+                    '06-2025' => 'Jun 2025',
                 ]),
              
 
