@@ -22,12 +22,12 @@ class ReportDateStats extends BaseWidget
 
             //total allowance current month where status is paid
             $paidAllowance = ReportClass::where('month', '06-2025')
-            ->where('status', 1)
+            ->where('allowance_note','like','dah_bayar')
             ->sum('allowance');
            
             //total allowance balance where status not paid
             $unpaidAllowance = ReportClass::where('month', '06-2025')
-            ->where('status', 0)
+            ->where('allowance_note','not like', 'dah_bayar')
             ->sum('allowance');
      
 
