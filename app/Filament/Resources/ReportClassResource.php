@@ -170,6 +170,17 @@ class ReportClassResource extends Resource
                     '17' => '17 jam',
                     '17.5' => '17 jam 30 minit',
                     '18' => '18 jam',
+                    '18.5' => '18 jam 30 minit',
+                    '19' => '19 jam',
+                    '19.5' => '19 jam 30 minit',
+                    '20' => '20 jam',
+                    '20.5' => '20 jam 30 minit',
+                    '21' => '21 jam',
+                    '21.5' => '21 jam 30 minit',
+                    '22' => '22 jam',
+
+                    
+
                 ])
 
                 ->native(false)
@@ -269,6 +280,14 @@ class ReportClassResource extends Resource
                         '17' => '17 jam',
                         '17.5' => '17 jam 30 minit',
                         '18' => '18 jam',
+                        '18.5' => '18 jam 30 minit',
+                        '19' => '19 jam',
+                        '19.5' => '19 jam 30 minit',
+                        '20' => '20 jam',
+                        '20.5' => '20 jam 30 minit',
+                        '21' => '21 jam',
+                        '21.5' => '21 jam 30 minit',
+                        '22' => '22 jam',
                     ])
 
                     ->native(false)
@@ -398,6 +417,7 @@ class ReportClassResource extends Resource
                     '04-2025' => 'April 2025',
                     '05-2025' => 'Mei 2025',
                     '06-2025' => 'Jun 2025',
+                    '07-2025' => 'Julai 2025',
                 ])
             
             ])
