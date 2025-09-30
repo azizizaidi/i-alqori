@@ -205,7 +205,8 @@ class ListAllowance extends Component implements HasForms, HasTable
                     '05-2025' => 'Mei 2025',
                     '06-2025' => 'Jun 2025',
                     '07-2025' => 'Julai 2025',
-                    '08-2025' => 'Ogos 2025'
+                    '08-2025' => 'Ogos 2025',
+                    '09-2025' => 'September 2025',
                 ]),
              
 
