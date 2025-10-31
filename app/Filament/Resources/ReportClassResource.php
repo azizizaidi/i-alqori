@@ -420,6 +420,7 @@ class ReportClassResource extends Resource
                     '07-2025' => 'Julai 2025',
                     '08-2025' => 'Ogos 2025',
                     '09-2025' => 'September 2025',
+                    '10-2025' => 'Oktober 2025',
                 ])
             
             ])
