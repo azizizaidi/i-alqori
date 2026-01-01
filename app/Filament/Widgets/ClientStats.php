@@ -26,7 +26,17 @@ class ClientStats extends BaseWidget
          
  
         
+        $fee26 = ReportClass::where('registrar_id',auth()->id())->where('month', '11-2026')->sum('fee_student');
+        $feeFormatted26 = 'RM' . number_format($fee26, 2); // Format the allowance
         return [
+            Stat::make('Jumlah Yuran Bulan November 26',  $feeFormatted26)
+            // ->description('32k increase')
+            // ->descriptionIcon('heroicon-m-arrow-trending-up')
+             ->color('success')
+             ->extraAttributes([
+                // 'wire:click' => '$emit("filterUpdate", "is_admin")',
+                 //'class' => 'cursor-pointer border-lime-400 ',
+             ]),
             Stat::make('Jumlah Yuran Bulan November 25',  $feeFormatted)
                // ->description('32k increase')
                // ->descriptionIcon('heroicon-m-arrow-trending-up')

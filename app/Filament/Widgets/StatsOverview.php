@@ -27,8 +27,18 @@ class StatsOverview extends BaseWidget
           ->distinct('registrar_id')
           ->withoutTrashed()
           ->count('registrar_id');
+
+          $allowance26 = ReportClass::where('month', '11-2026')->sum('allowance');
+          $allowanceFormatted26 = 'RM' . number_format($allowance26, 2); // Format the allowance
   
         return [
+            Stat::make('Elaun Bulan 11/26', $allowanceFormatted26)
+
+            ->color('success')
+            ->extraAttributes([
+               // 'wire:click' => '$emit("filterUpdate", "is_admin")',
+                //'class' => 'cursor-pointer border-lime-400 ',
+            ]),
             Stat::make('Elaun Bulan 11/25', $allowanceFormatted)
               
                 ->color('success')
