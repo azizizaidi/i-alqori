@@ -422,6 +422,7 @@ class ReportClassResource extends Resource
                     '09-2025' => 'September 2025',
                     '10-2025' => 'Oktober 2025',
                     '11-2025' => 'November 2025',
+                    '12-2025' => 'Disember 2025',
                 ])
             
             ])
