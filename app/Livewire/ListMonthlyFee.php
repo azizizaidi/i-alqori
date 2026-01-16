@@ -184,7 +184,7 @@ class ListMonthlyFee extends Component implements HasForms, HasTable
                 Action::make('bayar')
                     ->icon('heroicon-m-credit-card')
                     ->color('success')
-                    // ->url(fn(ReportClass $pay): string => route('toyyibpay.createBill', $pay))
+                     ->url(fn(ReportClass $pay): string => route('toyyibpay.createBill', $pay))
                     
                     ->visible(fn(Model $record) => $record->status != 1),
                       
