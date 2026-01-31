@@ -82,7 +82,7 @@ class Login extends BaseAuth
         $data = $this->form->getState();
 
         if (! Filament::auth()->attempt([
-            'samaccountname' => $data['email'], /*changed to samaccountname */
+            'email' => $data['email'], /*changed from samaccountname to email */
             'password' => $data['password'],
         ], $data['remember'])) {
             $this->addError('email', __('filament::login.messages.failed'));

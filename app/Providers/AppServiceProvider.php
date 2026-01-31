@@ -36,18 +36,19 @@ class AppServiceProvider extends ServiceProvider
     {
 
 
-        Health::checks([
-            OptimizedAppCheck::new(),
-            DebugModeCheck::new(),
-            EnvironmentCheck::new(),
-            DatabaseCheck::new(),
-            CpuLoadCheck::new()
-            ->failWhenLoadIsHigherInTheLast5Minutes(2.0)
-            ->failWhenLoadIsHigherInTheLast15Minutes(1.5),
-            DatabaseTableSizeCheck::new()
-            ->table('users', maxSizeInMb: 1_000),
-            SecurityAdvisoriesCheck::new()
-        ]);
+        // Health checks commented out - can cause slow performance
+        // Health::checks([
+        //     OptimizedAppCheck::new(),
+        //     DebugModeCheck::new(),
+        //     EnvironmentCheck::new(),
+        //     DatabaseCheck::new(),
+        //     CpuLoadCheck::new()
+        //     ->failWhenLoadIsHigherInTheLast5Minutes(2.0)
+        //     ->failWhenLoadIsHigherInTheLast15Minutes(1.5),
+        //     DatabaseTableSizeCheck::new()
+        //     ->table('users', maxSizeInMb: 1_000),
+        //     SecurityAdvisoriesCheck::new()
+        // ]);
 
         FilamentColor::register([
             'danger' => Color::Red,

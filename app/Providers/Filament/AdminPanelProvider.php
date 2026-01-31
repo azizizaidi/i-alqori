@@ -21,7 +21,7 @@ use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
 use Awcodes\FilamentVersions\VersionsPlugin;
 use Awcodes\FilamentVersions\VersionsWidget;
 use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
-use Amendozaaguiar\FilamentRouteStatistics\FilamentRouteStatisticsPlugin;
+// use Amendozaaguiar\FilamentRouteStatistics\FilamentRouteStatisticsPlugin;
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\Allowance;
@@ -102,8 +102,7 @@ class AdminPanelProvider extends PanelProvider
         
     )
             ->plugins([
-                FilamentRouteStatisticsPlugin::make(),
-                //...
+                // FilamentRouteStatisticsPlugin::make(),
             ])
             ->favicon(asset('images/fav-2.png'))
             ->viteTheme('resources/css/filament/admin/theme.css')

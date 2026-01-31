@@ -11,8 +11,8 @@ use App\Policies\PermissionPolicy;
 use App\Policies\RolePolicy;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Bilfeldt\LaravelRouteStatistics\Models\RouteStatistic;
-use App\Policies\RouteStatisticPolicy;
+// use Bilfeldt\LaravelRouteStatistics\Models\RouteStatistic;
+// use App\Policies\RouteStatisticPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
       //  User::class => UserPolicy::class,
       Role::class => RolePolicy::class,
       Permission::class => PermissionPolicy::class,
-      RouteStatistic::class => RouteStatisticPolicy::class
+      // RouteStatistic::class => RouteStatisticPolicy::class
 
     ];
 
