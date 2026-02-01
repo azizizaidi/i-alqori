@@ -12,27 +12,27 @@ class ReportDateStats extends BaseWidget
     protected function getStats(): array
     {
         // Sum the allowance_amount for the specified month
-        $earlyAllowance = ReportClass::where('month', '12-2025')
-            ->where('created_at', '<', Carbon::create(2026, 1, 1))
+        $earlyAllowance = ReportClass::where('month', '01-2026')
+            ->where('created_at', '<', Carbon::create(2026, 2, 3))
             ->sum('allowance');
 
-        $lateAllowance = ReportClass::where('month', '12-2025')
-            ->where('created_at', '>=', Carbon::create(2026, 1, 1))
+        $lateAllowance = ReportClass::where('month', '01-2026')
+            ->where('created_at', '>=', Carbon::create(2026, 2, 3))
             ->sum('allowance');
 
             //total allowance current month where status is paid
-            $paidAllowance = ReportClass::where('month', '12-2025')
+            $paidAllowance = ReportClass::where('month', '01-2026')
             ->where('allowance_note','like','dah_bayar')
             ->sum('allowance');
            
             //total allowance balance where status not paid
-            $unpaidAllowance = ReportClass::where('month', '12-2025')
+            $unpaidAllowance = ReportClass::where('month', '01-2026')
             ->where('allowance_note','not like', 'dah_bayar')
             ->sum('allowance');
      
 
         return [
-            Stat::make('Jumlah Elaun Hantar Sebelum 1/1/26', 'RM' . number_format($earlyAllowance, 2))
+            Stat::make('Jumlah Elaun Hantar Sebelum 3/2/26', 'RM' . number_format($earlyAllowance, 2))
                 ->color('success')
                 ->extraAttributes([
                     // Add attributes if needed

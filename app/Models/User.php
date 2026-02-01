@@ -17,8 +17,9 @@ use Bavix\Wallet\Traits\CanPay;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
-    use HasApiTokens, HasFactory, Notifiable,  HasRoles;
-    
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+
+    protected $with = [];
 
     /**
      * The attributes that are mass assignable.
@@ -72,7 +73,20 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id')
+            ->with('permissions');
+    }
+
+    /**
+     * Get cached permissions for the user.
+     */
+    public function getCachedPermissionsAttribute(): \Illuminate\Support\Collection
+    {
+        return \cache()->remember(
+            "user_{$this->id}_permissions",
+            3600,
+            fn() => $this->getAllPermissions()
+        );
     }
 
 }

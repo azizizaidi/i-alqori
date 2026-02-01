@@ -12,7 +12,7 @@ class ClientStats extends BaseWidget
     {
 
            // Sum the allowance_amount for the specified month
-           $fee = ReportClass::where('registrar_id',auth()->id())->where('month', '12-2025')->sum('fee_student');
+           $fee = ReportClass::where('registrar_id',auth()->id())->where('month', '01-2026')->sum('fee_student');
            $feeFormatted = 'RM' . number_format($fee, 2); // Format the allowance
 
            $sumfeeoverdue = ReportClass::where('registrar_id',auth()->id())
@@ -26,8 +26,8 @@ class ClientStats extends BaseWidget
          
  
         
-        return [
-            Stat::make('Jumlah Yuran Bulan Disember 25',  $feeFormatted)
+        return [                                                                                                                                                            
+            Stat::make('Jumlah Yuran Bulan Januari 26',  $feeFormatted)
                // ->description('32k increase')
                // ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')

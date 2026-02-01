@@ -38,7 +38,6 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\BadgeColumn;
 use Illuminate\Database\Eloquent\Model;
 use Closure;
 use Filament\Notifications\Notification;
@@ -178,6 +177,7 @@ class ListMonthlyFee extends Component implements HasForms, HasTable
                         '10-2025' => 'Oktober 2025',
                         '11-2025' => 'November 2025',
                         '12-2025' => 'Disember 2025',
+                        '01-2026' => 'Januari 2026',
                     ]),
             ])
             ->actions([
