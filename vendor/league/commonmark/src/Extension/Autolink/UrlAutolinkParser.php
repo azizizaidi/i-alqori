@@ -23,7 +23,7 @@ final class UrlAutolinkParser implements InlineParserInterface
     private const ALLOWED_AFTER = [null, ' ', "\t", "\n", "\x0b", "\x0c", "\x0d", '*', '_', '~', '('];
 
     // RegEx adapted from https://github.com/symfony/symfony/blob/6.3/src/Symfony/Component/Validator/Constraints/UrlValidator.php
-    private const REGEX = '~
+    private const REGEX = '~^
         (
             # Must start with a supported scheme + auth, or "www"
             (?:
@@ -34,7 +34,7 @@ final class UrlAutolinkParser implements InlineParserInterface
                 (?:
                     (?:xn--[a-z0-9-]++\.)*+xn--[a-z0-9-]++            # a domain name using punycode
                         |
-                    (?:[\pL\pN\pS\pM\-\_]++\.)+[\pL\pN\pM]++          # a multi-level domain name
+                    (?:[\pL\pN\pS\pM\-\_]++\.){1,127}[\pL\pN\pM]++    # a multi-level domain name; total length must be 253 bytes or less
                         |
                     [a-z0-9\-\_]++                                    # a single-level domain name
                 )\.?

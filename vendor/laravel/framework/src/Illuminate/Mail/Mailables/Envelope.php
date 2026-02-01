@@ -4,6 +4,7 @@ namespace Illuminate\Mail\Mailables;
 
 use Closure;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Conditionable;
 
 class Envelope
@@ -89,7 +90,7 @@ class Envelope
      *
      * @named-arguments-supported
      */
-    public function __construct(Address|string $from = null, $to = [], $cc = [], $bcc = [], $replyTo = [], string $subject = null, array $tags = [], array $metadata = [], Closure|array $using = [])
+    public function __construct(Address|string|null $from = null, $to = [], $cc = [], $bcc = [], $replyTo = [], ?string $subject = null, array $tags = [], array $metadata = [], Closure|array $using = [])
     {
         $this->from = is_string($from) ? new Address($from) : $from;
         $this->to = $this->normalizeAddresses($to);
@@ -110,9 +111,9 @@ class Envelope
      */
     protected function normalizeAddresses($addresses)
     {
-        return collect($addresses)->map(function ($address) {
-            return is_string($address) ? new Address($address) : $address;
-        })->all();
+        return (new Collection($addresses))
+            ->map(fn ($address) => is_string($address) ? new Address($address) : $address)
+            ->all();
     }
 
     /**
@@ -266,7 +267,7 @@ class Envelope
      * @param  string|null  $name
      * @return bool
      */
-    public function isFrom(string $address, string $name = null)
+    public function isFrom(string $address, ?string $name = null)
     {
         if (is_null($name)) {
             return $this->from->address === $address;
@@ -283,7 +284,7 @@ class Envelope
      * @param  string|null  $name
      * @return bool
      */
-    public function hasTo(string $address, string $name = null)
+    public function hasTo(string $address, ?string $name = null)
     {
         return $this->hasRecipient($this->to, $address, $name);
     }
@@ -295,7 +296,7 @@ class Envelope
      * @param  string|null  $name
      * @return bool
      */
-    public function hasCc(string $address, string $name = null)
+    public function hasCc(string $address, ?string $name = null)
     {
         return $this->hasRecipient($this->cc, $address, $name);
     }
@@ -307,7 +308,7 @@ class Envelope
      * @param  string|null  $name
      * @return bool
      */
-    public function hasBcc(string $address, string $name = null)
+    public function hasBcc(string $address, ?string $name = null)
     {
         return $this->hasRecipient($this->bcc, $address, $name);
     }
@@ -319,7 +320,7 @@ class Envelope
      * @param  string|null  $name
      * @return bool
      */
-    public function hasReplyTo(string $address, string $name = null)
+    public function hasReplyTo(string $address, ?string $name = null)
     {
         return $this->hasRecipient($this->replyTo, $address, $name);
     }
@@ -334,7 +335,7 @@ class Envelope
      */
     protected function hasRecipient(array $recipients, string $address, ?string $name = null)
     {
-        return collect($recipients)->contains(function ($recipient) use ($address, $name) {
+        return (new Collection($recipients))->contains(function ($recipient) use ($address, $name) {
             if (is_null($name)) {
                 return $recipient->address === $address;
             }

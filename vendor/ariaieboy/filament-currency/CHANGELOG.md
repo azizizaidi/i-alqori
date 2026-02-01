@@ -2,6 +2,80 @@
 
 All notable changes to `filament-currency` will be documented in this file.
 
+## 1.12.0 - 2025-02-08
+
+- add support for laravel-money version 6
+
+> if you use PHP 8.4 you should upgrade to laravel-money version 6
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.11.0...1.12.0
+
+## 1.11.0 - 2025-01-11
+
+### What's Changed
+
+* Include Support for Summarizer by @eele94 in https://github.com/ariaieboy/filament-currency/pull/46
+
+### New Contributors
+
+* @eele94 made their first contribution in https://github.com/ariaieboy/filament-currency/pull/46
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.10.0...1.11.0
+
+## 1.10.0 - 2024-11-03
+
+- add support for `MONEY_DEFAULTS_CONVERT` env variable
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.9.2...1.10.0
+
+## 1.9.2 - 2024-09-29
+
+- add php 8.4 to composer.json
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.9.1...1.9.2
+
+## 1.9.1 - 2024-09-24
+
+### What's Changed
+
+* fix safari error on required inputs by @ariaieboy in https://github.com/ariaieboy/filament-currency/pull/44
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.9.0...1.9.1
+
+## 1.9.0 - 2024-09-22
+
+### What's Changed
+
+* 41 add textinputcolumn currencymask support by @ariaieboy in https://github.com/ariaieboy/filament-currency/pull/42
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.8.4...1.9.0
+
+## 1.8.4 - 2024-08-12
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.8.3...1.8.4
+
+## 1.8.3 - 2024-08-12
+
+* fix issue https://github.com/ariaieboy/filament-currency/issues/39#issuecomment-2284272710
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.8.2...1.8.3
+
+## 1.8.2 - 2024-08-12
+
+### What's Changed
+
+* fix issue #39 by @ariaieboy in https://github.com/ariaieboy/filament-currency/pull/40
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.8.1...1.8.2
+
+## 1.8.1 - 2024-06-05
+
+### What's Changed
+
+* fix number zero bug on initial request by @ariaieboy in https://github.com/ariaieboy/filament-currency/pull/37
+
+**Full Changelog**: https://github.com/ariaieboy/filament-currency/compare/1.8.0...1.8.1
+
 ## 1.8.0 - 2024-06-01
 
 ### What's Changed

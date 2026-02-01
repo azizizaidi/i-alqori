@@ -1,16 +1,18 @@
 <?php
 
-namespace Barryvdh\Debugbar\Support\Clockwork;
+declare(strict_types=1);
+
+namespace Fruitcake\LaravelDebugbar\Support\Clockwork;
 
 class Converter
 {
     /**
      * Convert the phpdebugbar data to Clockwork format.
      *
-     * @param  array $data
-     * @return array
+     * @param array $data
+     *
      */
-    public function convert($data)
+    public function convert($data): array
     {
         $meta = $data['__meta'];
 
@@ -39,11 +41,11 @@ class Converter
             $output = array_merge($output, $data['clockwork']);
         }
 
-        if (isset($data['memory'])) {
+        if (isset($data['memory']['peak_usage'])) {
             $output['memoryUsage'] = $data['memory']['peak_usage'];
         }
 
-        if (isset($data['time'])) {
+        if (isset($data['time']['measures'])) {
             $time = $data['time'];
             $output['time'] = $time['start'];
             $output['responseTime'] = $time['end'];
@@ -70,21 +72,21 @@ class Converter
                 $controller = $route['uses'];
             }
 
-            $output['controller'] = $controller;
+            $output['controller'] = preg_replace('/<a\b[^>]*>(.*?)<\/a>/i', '', (string) $controller) ?: null;
 
-            list($method, $uri) = explode(' ', $route['uri'], 2);
+            [$method, $uri] = explode(' ', $route['uri'], 2);
 
             $output['routes'][] = [
-                'action' => $controller,
-                'after' => isset($route['after']) ? $route['after'] : null,
-                'before' => isset($route['before']) ? $route['before'] : null,
+                'action' => $output['controller'],
+                'after' => $route['after'] ?? null,
+                'before' => $route['before'] ?? null,
                 'method' => $method,
-                'name' => isset($route['as']) ? $route['as'] : null,
+                'name' => $route['as'] ?? null,
                 'uri' => $uri,
             ];
         }
 
-        if (isset($data['messages'])) {
+        if (isset($data['messages']['messages'])) {
             foreach ($data['messages']['messages'] as $message) {
                 $output['log'][] = [
                     'message' => $message['message'],
@@ -94,10 +96,10 @@ class Converter
             }
         }
 
-        if (isset($data['queries'])) {
+        if (isset($data['queries']['statements'])) {
             $queries = $data['queries'];
             foreach ($queries['statements'] as $statement) {
-                if ($statement['type'] === 'explain') {
+                if ($statement['type'] === 'explain' || $statement['type'] === 'info') {
                     continue;
                 }
                 $output['databaseQueries'][] = [
@@ -105,22 +107,31 @@ class Converter
                     'bindings' => $statement['params'],
                     'duration' => $statement['duration'] * 1000,
                     'time' => $statement['start'] ?? null,
-                    'connection' => $statement['connection']
+                    'connection' => $statement['connection'],
                 ];
             }
 
             $output['databaseDuration'] = $queries['accumulated_duration'] * 1000;
         }
 
-        if (isset($data['models'])) {
+        if (isset($data['models']['data'])) {
             $output['modelsActions'] = [];
             $output['modelsCreated'] = [];
             $output['modelsUpdated'] = [];
             $output['modelsDeleted'] = [];
-            $output['modelsRetrieved'] = $data['models']['data'];
+            $output['modelsRetrieved'] = [];
+
+            foreach ($data['models']['data'] as $model => $value) {
+                foreach ($value as $event => $count) {
+                    $eventKey = 'models' . ucfirst($event);
+                    if (isset($output[$eventKey])) {
+                        $output[$eventKey][$model] = $count;
+                    }
+                }
+            }
         }
 
-        if (isset($data['views'])) {
+        if (isset($data['views']['templates'])) {
             foreach ($data['views']['templates'] as $view) {
                 $output['viewsData'][] = [
                     'description' => 'Rendering a view',
@@ -135,7 +146,7 @@ class Converter
             }
         }
 
-        if (isset($data['event'])) {
+        if (isset($data['event']['measures'])) {
             foreach ($data['event']['measures'] as $event) {
                 $event['data'] = [];
                 $event['listeners'] = [];
@@ -152,7 +163,7 @@ class Converter
             }
         }
 
-        if (isset($data['symfonymailer_mails'])) {
+        if (isset($data['symfonymailer_mails']['mails'])) {
             foreach ($data['symfonymailer_mails']['mails'] as $mail) {
                 $output['emailsData'][] = [
                     'data' => [

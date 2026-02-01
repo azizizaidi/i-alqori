@@ -166,8 +166,8 @@ class FormRequest extends Request implements ValidatesWhenResolved
         $exception = $validator->getException();
 
         throw (new $exception($validator))
-                    ->errorBag($this->errorBag)
-                    ->redirectTo($this->getRedirectUrl());
+            ->errorBag($this->errorBag)
+            ->redirectTo($this->getRedirectUrl());
     }
 
     /**
@@ -226,7 +226,7 @@ class FormRequest extends Request implements ValidatesWhenResolved
      * @param  array|null  $keys
      * @return \Illuminate\Support\ValidatedInput|array
      */
-    public function safe(array $keys = null)
+    public function safe(?array $keys = null)
     {
         return is_array($keys)
                     ? $this->validator->safe()->only($keys)

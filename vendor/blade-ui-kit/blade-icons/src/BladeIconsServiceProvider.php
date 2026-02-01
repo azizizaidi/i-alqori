@@ -65,6 +65,18 @@ final class BladeIconsServiceProvider extends ServiceProvider
         $this->callAfterResolving(ViewFactory::class, function ($view, Application $app) {
             $app->make(Factory::class)->registerComponents();
         });
+
+        // Ensure components are registered during console commands (like optimize)
+        // that may compile views before ViewFactory is resolved
+        if ($this->app->runningInConsole() && ! $this->app->environment('testing')) {
+            $this->app->booted(function (Application $app) {
+                try {
+                    $app->make(Factory::class)->registerComponents();
+                } catch (\Exception $e) {
+                    // Silently fail if factory isn't ready yet
+                }
+            });
+        }
     }
 
     private function registerManifest(): void
@@ -90,6 +102,14 @@ final class BladeIconsServiceProvider extends ServiceProvider
                 Console\CacheCommand::class,
                 Console\ClearCommand::class,
             ]);
+
+            if (method_exists($this, 'optimizes')) {
+                $this->optimizes(
+                    'icons:cache',
+                    'icons:clear',
+                    'blade-icons'
+                );
+            }
         }
     }
 

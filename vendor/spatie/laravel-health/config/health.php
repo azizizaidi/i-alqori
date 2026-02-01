@@ -106,6 +106,24 @@ return [
     ],
 
     /*
+     * You can specify a heartbeat URL for the Horizon check.
+     * This URL will be pinged if the Horizon check is successful.
+     * This way you can get notified if Horizon goes down.
+     */
+    'horizon' => [
+        'heartbeat_url' => env('HORIZON_HEARTBEAT_URL'),
+    ],
+
+    /*
+     * You can specify a heartbeat URL for the Schedule check.
+     * This URL will be pinged if the Schedule check is successful.
+     * This way you can get notified if the schedule fails to run.
+     */
+    'schedule' => [
+        'heartbeat_url' => env('SCHEDULE_HEARTBEAT_URL'),
+    ],
+
+    /*
      * You can set a theme for the local results page
      *
      * - light: light mode
@@ -114,7 +132,7 @@ return [
     'theme' => 'light',
 
     /*
-     * When enabled,  completed `HealthQueueJob`s will be displayed
+     * When enabled, completed `HealthQueueJob`s will be displayed
      * in Horizon's silenced jobs screen.
      */
     'silence_health_queue_job' => true,
@@ -124,4 +142,17 @@ return [
      * check has failed
      */
     'json_results_failure_status' => 200,
+
+    /*
+     * You can specify a secret token that needs to be sent in the X-Secret-Token for secured access.
+     */
+    'secret_token' => env('HEALTH_SECRET_TOKEN'),
+
+/**
+ * By default, conditionally skipped health checks are treated as failures.
+ * You can override this behavior by uncommenting the configuration below.
+ *
+ * @link https://spatie.be/docs/laravel-health/v1/basic-usage/conditionally-running-or-modifying-checks
+ */
+    // 'treat_skipped_as_failure' => false
 ];

@@ -52,6 +52,8 @@ FilamentView::registerRenderHook(
 - `PanelsRenderHook::AUTH_REGISTER_FORM_BEFORE` - Before register form
 - `PanelsRenderHook::BODY_END` - Before `</body>`
 - `PanelsRenderHook::BODY_START` - After `<body>`
+- `PanelsRenderHook::CONTENT_AFTER` - After page content
+- `PanelsRenderHook::CONTENT_BEFORE` - Before page content
 - `PanelsRenderHook::CONTENT_END` - After page content, inside `<main>`
 - `PanelsRenderHook::CONTENT_START` - Before page content, inside `<main>`
 - `PanelsRenderHook::FOOTER` - Footer of the page
@@ -69,6 +71,16 @@ FilamentView::registerRenderHook(
 - `PanelsRenderHook::PAGE_HEADER_WIDGETS_AFTER` - After the page header widgets, also [can be scoped](#scoping-render-hooks) to the page or resource class
 - `PanelsRenderHook::PAGE_HEADER_WIDGETS_BEFORE` - Before the page header widgets, also [can be scoped](#scoping-render-hooks) to the page or resource class
 - `PanelsRenderHook::PAGE_START` - Start of the page content container, also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_END_AFTER` - After the page sub navigation "end" sidebar position, also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_END_BEFORE` - Before the page sub navigation "end" sidebar position, also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_SELECT_AFTER` - After the page sub navigation select (for mobile), also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_SELECT_BEFORE` - Before the page sub navigation select (for mobile), also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_SIDEBAR_AFTER` - After the page sub navigation sidebar, also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_SIDEBAR_BEFORE` - Before the page sub navigation sidebar, also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_START_AFTER` - After the page sub navigation "start" sidebar position, also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_START_BEFORE` - Before the page sub navigation "start" sidebar position, also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_TOP_AFTER` - After the page sub navigation "top" tabs position, also [can be scoped](#scoping-render-hooks) to the page or resource class
+- `PanelsRenderHook::PAGE_SUB_NAVIGATION_TOP_BEFORE` - Before the page sub navigation "top" tabs position, also [can be scoped](#scoping-render-hooks) to the page or resource class
 - `PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_AFTER` - After the resource table, also [can be scoped](#scoping-render-hooks) to the page or resource class
 - `PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_BEFORE` - Before the resource table, also [can be scoped](#scoping-render-hooks) to the page or resource class
 - `PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABS_END` - The end of the filter tabs (after the last tab), also [can be scoped](#scoping-render-hooks) to the page or resource class

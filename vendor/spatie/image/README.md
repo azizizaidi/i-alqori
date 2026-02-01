@@ -1,9 +1,19 @@
-# Manipulate images with an expressive API
+<div align="left">
+    <a href="https://spatie.be/open-source?utm_source=github&utm_medium=banner&utm_campaign=image">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://spatie.be/packages/header/image/html/dark.webp">
+        <img alt="Logo for image" src="https://spatie.be/packages/header/image/html/light.webp">
+      </picture>
+    </a>
+
+<h1>Manipulate images with an expressive API</h1>
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/image.svg?style=flat-square)](https://packagist.org/packages/spatie/image)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/spatie/image/run-tests.yml?label=tests)](https://github.com/spatie/image/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/image.svg?style=flat-square)](https://packagist.org/packages/spatie/image)
+    
+</div>
 
 Image manipulation doesn't have to be hard. Here are a few examples on how this package makes it very easy to manipulate images.
 
@@ -36,8 +46,6 @@ Image::load($pathToImage)
 
 You'll find more examples in [the full documentation](https://docs.spatie.be/image).
 
-Under the hood [Glide](http://glide.thephpleague.com/) by [Jonathan Reinink](https://twitter.com/reinink) is used.
-
 ## Support us
 
 [<img src="https://github-ads.s3.eu-central-1.amazonaws.com/image.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/image)
@@ -67,6 +75,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Testing
 
 ``` bash
+npm i pixelmatch
 composer test
 ```
 
@@ -91,7 +100,7 @@ We publish all received postcards [on our company website](https://spatie.be/en/
 - [Freek Van der Herten](https://github.com/freekmurze)
 - [All Contributors](../../contributors)
 
-Under the hood [Glide](http://glide.thephpleague.com/) by [Jonathan Reinink](https://twitter.com/reinink) is used. We've based our documentation and docblocks on text found in [the Glide documentation](http://glide.thephpleague.com/)
+Large parts of this codebase were copied from [Intervention Image](https://image.intervention.io/v3) by [Oliver Vogel](https://github.com/olivervogel), and modified for readability and to fit our needs.
 
 ## License
 

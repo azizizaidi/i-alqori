@@ -5,7 +5,7 @@
 [![StyleCI](https://github.styleci.io/repos/112121508/shield?style=flat&branch=master)](https://styleci.io/repos/112121508)
 [![License](https://img.shields.io/github/license/akaunting/laravel-money)](LICENSE.md)
 
-This package intends to provide tools for formatting and conversion monetary values in an easy, yet powerful way for Laravel projects.
+This package intends to provide tools for formatting and conversion of monetary values in an easy, yet powerful way for Laravel projects.
 
 ### Why not use the `moneyphp` package?
 
@@ -141,13 +141,13 @@ Define the mixin class:
 ```php
 use Akaunting\Money\Money;
 
-class CustomMoney 
+class CustomMoney
 {
     public function absolute(): Money
     {
         return $this->isPositive() ? $this : $this->multiply(-1);
     }
-    
+
     public static function zero(?string $currency = null): Money
     {
         return new Money(0, new Currency($currency ?? 'GBP'));

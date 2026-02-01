@@ -6,6 +6,7 @@ use Composer\InstalledVersions;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ServerException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Spatie\Health\Checks\Check;
 use Spatie\Health\Checks\Result;
 use Spatie\Packagist\PackagistClient;
@@ -25,6 +26,8 @@ class SecurityAdvisoriesCheck extends Check
 
     public PackagistClient $packagistClient;
 
+    protected int $cacheResultsForMinutes = 0;
+
     public function __construct(?PackagistClient $packagistClient = null)
     {
         parent::__construct();
@@ -36,6 +39,13 @@ class SecurityAdvisoriesCheck extends Check
     public function retryTimes(int $times): self
     {
         $this->retryTimes = $times;
+
+        return $this;
+    }
+
+    public function cacheResultsForMinutes(int $minutes): self
+    {
+        $this->cacheResultsForMinutes = $minutes;
 
         return $this;
     }
@@ -104,11 +114,39 @@ class SecurityAdvisoriesCheck extends Check
      */
     protected function getAdvisories(Collection $packages): Collection
     {
+        if ($this->cacheResultsForMinutes === 0) {
+            return $this->fetchAdvisoriesFromApi($packages);
+        }
+
+        $cacheKey = $this->getCacheKey($packages);
+
+        // Use Laravel's cache (resolved at runtime to avoid issues during register())
+        $cache = App::make('cache.store');
+
+        return $cache->remember(
+            $cacheKey,
+            $this->cacheResultsForMinutes * 60,
+            fn () => $this->fetchAdvisoriesFromApi($packages)
+        );
+    }
+
+    protected function fetchAdvisoriesFromApi(Collection $packages): Collection
+    {
         $advisories = $this
             ->packagistClient
             ->getAdvisoriesAffectingVersions($packages->toArray());
 
         return collect($advisories);
+    }
+
+    protected function getCacheKey(Collection $packages): string
+    {
+        return 'security-advisories:' . md5(
+            $packages
+                ->sortKeys()
+                ->map(fn ($version, $name) => "{$name}:{$version}")
+                ->implode('|')
+        );
     }
 
     protected function allRetriesAreGatewayErrors(): bool

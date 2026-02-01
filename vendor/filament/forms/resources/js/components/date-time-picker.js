@@ -14,6 +14,7 @@ dayjs.extend(utc)
 window.dayjs = dayjs
 
 export default function dateTimePickerFormComponent({
+    defaultFocusedDate,
     displayFormat,
     firstDayOfWeek,
     isAutofocused,
@@ -46,6 +47,8 @@ export default function dateTimePickerFormComponent({
 
         state,
 
+        defaultFocusedDate,
+
         dayLabels: [],
 
         months: [],
@@ -53,10 +56,17 @@ export default function dateTimePickerFormComponent({
         init: function () {
             dayjs.locale(locales[locale] ?? locales['en'])
 
-            this.focusedDate = dayjs().tz(timezone)
+            this.$nextTick(() => {
+                this.focusedDate ??= (
+                    this.getDefaultFocusedDate() ?? dayjs()
+                ).tz(timezone)
+                this.focusedMonth ??= this.focusedDate.month()
+                this.focusedYear ??= this.focusedDate.year()
+            })
 
             let date =
                 this.getSelectedDate() ??
+                this.getDefaultFocusedDate() ??
                 dayjs().tz(timezone).hour(0).minute(0).second(0)
 
             if (this.getMaxDate() !== null && date.isAfter(this.getMaxDate())) {
@@ -382,10 +392,25 @@ export default function dateTimePickerFormComponent({
             return date
         },
 
+        getDefaultFocusedDate: function () {
+            if (this.defaultFocusedDate === null) {
+                return null
+            }
+
+            let defaultFocusedDate = dayjs(this.defaultFocusedDate)
+
+            if (!defaultFocusedDate.isValid()) {
+                return null
+            }
+
+            return defaultFocusedDate
+        },
+
         togglePanelVisibility: function () {
             if (!this.isOpen()) {
                 this.focusedDate =
                     this.getSelectedDate() ??
+                    this.focusedDate ??
                     this.getMinDate() ??
                     dayjs().tz(timezone)
 
@@ -483,6 +508,7 @@ const locales = {
     cy: require('dayjs/locale/cy'),
     da: require('dayjs/locale/da'),
     de: require('dayjs/locale/de'),
+    el: require('dayjs/locale/el'),
     en: require('dayjs/locale/en'),
     es: require('dayjs/locale/es'),
     et: require('dayjs/locale/et'),
@@ -510,6 +536,7 @@ const locales = {
     ro: require('dayjs/locale/ro'),
     ru: require('dayjs/locale/ru'),
     sv: require('dayjs/locale/sv'),
+    th: require('dayjs/locale/th'),
     tr: require('dayjs/locale/tr'),
     uk: require('dayjs/locale/uk'),
     vi: require('dayjs/locale/vi'),

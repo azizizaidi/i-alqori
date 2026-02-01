@@ -3,8 +3,8 @@
 namespace Spatie\MediaLibrary\Conversions\Actions;
 
 use Spatie\MediaLibrary\Conversions\Conversion;
-use Spatie\MediaLibrary\Conversions\Events\ConversionHasBeenCompleted;
-use Spatie\MediaLibrary\Conversions\Events\ConversionWillStart;
+use Spatie\MediaLibrary\Conversions\Events\ConversionHasBeenCompletedEvent;
+use Spatie\MediaLibrary\Conversions\Events\ConversionWillStartEvent;
 use Spatie\MediaLibrary\Conversions\ImageGenerators\ImageGeneratorFactory;
 use Spatie\MediaLibrary\MediaCollections\Filesystem;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -16,7 +16,7 @@ class PerformConversionAction
         Conversion $conversion,
         Media $media,
         string $copiedOriginalFile
-    ) {
+    ): void {
         $imageGenerator = ImageGeneratorFactory::forMedia($media);
 
         $copiedOriginalFile = $imageGenerator->convert($copiedOriginalFile, $conversion);
@@ -25,9 +25,13 @@ class PerformConversionAction
             return;
         }
 
-        event(new ConversionWillStart($media, $conversion, $copiedOriginalFile));
+        event(new ConversionWillStartEvent($media, $conversion, $copiedOriginalFile));
 
-        $manipulationResult = (new PerformManipulationsAction())->execute($media, $conversion, $copiedOriginalFile);
+        $manipulationResult = (new PerformManipulationsAction)->execute($media, $conversion, $copiedOriginalFile);
+
+        if (! $manipulationResult || $manipulationResult === '') {
+            return;
+        }
 
         $newFileName = $conversion->getConversionFile($media);
 
@@ -48,7 +52,7 @@ class PerformConversionAction
 
         $media->markAsConversionGenerated($conversion->getName());
 
-        event(new ConversionHasBeenCompleted($media, $conversion));
+        event(new ConversionHasBeenCompletedEvent($media, $conversion));
     }
 
     protected function renameInLocalDirectory(

@@ -9,6 +9,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\Summarizers;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -35,6 +36,9 @@ class FilamentCurrencyServiceProvider extends PackageServiceProvider
             if (blank($currency)) {
                 $currency = config('filament-currency.default_currency');
             }
+            if (is_null($shouldConvert)) {
+                $shouldConvert = config('filament-currency.default_convert');
+            }
 
             return (new Money\Money(
                 $state,
@@ -43,7 +47,7 @@ class FilamentCurrencyServiceProvider extends PackageServiceProvider
             ))->format();
         };
 
-        TextColumn::macro('currency', function (string | Closure | null $currency = null, bool $shouldConvert = false) use ($formatter): TextColumn {
+        TextColumn::macro('currency', function (string | Closure | null $currency = null, ?bool $shouldConvert = null) use ($formatter): TextColumn {
             /**
              * @var TextColumn $this
              */
@@ -55,17 +59,20 @@ class FilamentCurrencyServiceProvider extends PackageServiceProvider
 
             return $this;
         });
-        TextInput::macro('currencyMask', function ($thousandSeparator = ',', $decimalSeparator = '.', $precision = 2): TextInput {
+
+        Summarizers\Summarizer::macro('currency', function (string | Closure | null $currency = null, ?bool $shouldConvert = null) use ($formatter): Summarizers\Summarizer {
             /**
-             * @var TextInput $this
+             * @var Summarizers\Sum $this
              */
-            $this->view = 'filament-currency::currency-mask';
-            $this->viewData(compact('thousandSeparator', 'decimalSeparator', 'precision'));
+            $this->formatStateUsing(static function (Summarizers\Summarizer $summarizer, $state) use ($currency, $shouldConvert, $formatter): ?string {
+
+                return $formatter($state, $summarizer, $currency, $shouldConvert);
+            });
 
             return $this;
         });
 
-        Summarizers\Sum::macro('currency', function (string | Closure | null $currency = null, bool $shouldConvert = false) use ($formatter): Summarizers\Sum {
+        Summarizers\Sum::macro('currency', function (string | Closure | null $currency = null, ?bool $shouldConvert = null) use ($formatter): Summarizers\Sum {
             /**
              * @var Summarizers\Sum $this
              */
@@ -78,7 +85,7 @@ class FilamentCurrencyServiceProvider extends PackageServiceProvider
             return $this;
         });
 
-        Summarizers\Average::macro('currency', function (string | Closure | null $currency = null, bool $shouldConvert = false) use ($formatter): Summarizers\Average {
+        Summarizers\Average::macro('currency', function (string | Closure | null $currency = null, ?bool $shouldConvert = null) use ($formatter): Summarizers\Average {
             /**
              * @var Summarizers\Average $this
              */
@@ -91,7 +98,7 @@ class FilamentCurrencyServiceProvider extends PackageServiceProvider
             return $this;
         });
 
-        TextEntry::macro('currency', function (string | Closure | null $currency = null, bool $shouldConvert = false) use ($formatter): TextEntry {
+        TextEntry::macro('currency', function (string | Closure | null $currency = null, ?bool $shouldConvert = null) use ($formatter): TextEntry {
             /**
              * @var TextEntry $this
              */
@@ -100,6 +107,25 @@ class FilamentCurrencyServiceProvider extends PackageServiceProvider
                 return $formatter($state, $column, $currency, $shouldConvert);
 
             });
+
+            return $this;
+        });
+
+        TextInput::macro('currencyMask', function ($thousandSeparator = ',', $decimalSeparator = '.', $precision = 2): TextInput {
+            /**
+             * @var TextInput $this
+             */
+            $this->view = 'filament-currency::currency-mask';
+            $this->viewData(compact('thousandSeparator', 'decimalSeparator', 'precision'));
+
+            return $this;
+        });
+        TextInputColumn::macro('currencyMask', function ($thousandSeparator = ',', $decimalSeparator = '.', $precision = 2): TextInputColumn {
+            /**
+             * @var TextInput $this
+             */
+            $this->view = 'filament-currency::text-input-column';
+            $this->viewData(compact('thousandSeparator', 'decimalSeparator', 'precision'));
 
             return $this;
         });

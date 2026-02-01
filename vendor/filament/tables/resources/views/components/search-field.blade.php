@@ -29,9 +29,10 @@
     >
         <x-filament::input
             :attributes="
-                (new ComponentAttributeBag())->merge([
+                (new ComponentAttributeBag)->merge([
                     'autocomplete' => 'off',
                     'inlinePrefix' => true,
+                    'maxlength' => 1000,
                     'placeholder' => $placeholder,
                     'type' => 'search',
                     'wire:key' => $this->getId() . '.table.' . $wireModel . '.field.input',

@@ -1,10 +1,18 @@
-<p align="center"><img src="/art/socialcard.png" alt="Social Card of Laravel Media Library"></p>
+<div align="left">
+    <a href="https://spatie.be/open-source?utm_source=github&utm_medium=banner&utm_campaign=laravel-medialibrary">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://spatie.be/packages/header/laravel-medialibrary/html/dark.webp">
+        <img alt="Logo for laravel-medialibrary" src="https://spatie.be/packages/header/laravel-medialibrary/html/light.webp">
+      </picture>
+    </a>
 
-# Associate files with Eloquent models
+<h1>Associate files with Eloquent models</h1>
 
 [![Latest Version](https://img.shields.io/github/release/spatie/laravel-medialibrary.svg?style=flat-square)](https://github.com/spatie/laravel-medialibrary/releases)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-medialibrary/run-tests.yml?branch=master&style=flat-square&label=tests)
+[![run-tests](https://github.com/spatie/laravel-medialibrary/actions/workflows/run-tests.yml/badge.svg)](https://github.com/spatie/laravel-medialibrary/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-medialibrary.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary)
+    
+</div>
 
 This package can associate all sorts of files with Eloquent models. It provides a
 simple API to work with. To learn all about it, head over to [the extensive documentation](https://spatie.be/docs/laravel-medialibrary).
@@ -30,7 +38,7 @@ $newsItem->addMedia($bigFile)->toMediaCollection('downloads', 's3');
 ```
 
 The storage of the files is handled by [Laravel's Filesystem](https://laravel.com/docs/filesystem),
-so you can use any filesystem you like. Additionally the package can create image manipulations
+so you can use any filesystem you like. Additionally, the package can create image manipulations
 on images and pdfs that have been added in the media library.
 
 Spatie is a webdesign agency in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
@@ -45,7 +53,7 @@ We highly appreciate you sending us a postcard from your hometown, mentioning wh
 
 ## Documentation
 
-You'll find the documentation on [https://spatie.be/docs/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary/v10).
+You'll find the documentation on [https://spatie.be/docs/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary/v11).
 
 Find yourself stuck using the package? Found a bug? Do you have general questions or suggestions for improving the media library? Feel free to [create an issue on GitHub](https://github.com/spatie/laravel-medialibrary/issues), we'll try to address it as soon as possible.
 
@@ -59,17 +67,19 @@ You can run the tests with:
 ./vendor/bin/pest
 ```
 
-You can run the Github actions locally with [act](https://github.com/nektos/act). You have to use a [custom image](https://github.com/shivammathur/setup-php#local-testing-setup) for the ubuntu-latest platform to get PHP up and running properly. To run the tests locally, run:
+You can run the Github actions locally with [act](https://github.com/nektos/act). To run the tests locally, run:
 
-```bash
-act -P ubuntu-latest=shivammathur/node:latest
+```
+act -j run-tests
 ```
 
-To run a specific workflow, for example `run-tests.yml` run:
+To run tests for a specific PHP/Laravel version, run:
 
-```bash
-act -P ubuntu-latest=shivammathur/node:latest -j run-tests
 ```
+act -j run-tests --matrix php:8.3 --matrix laravel:"11.*" --matrix dependency-version:prefer-stable 
+```
+
+Available `matrix` options are available in the [workflow file](.github/workflows/run-tests.yml).
 
 ## Upgrading
 
@@ -94,7 +104,7 @@ If you discover any security related issues, please email [security@spatie.be](m
 
 A big thank you to [Nicolas Beauvais](https://github.com/nicolasbeauvais) for helping out with the issues on this repo.
 
-And a special thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
+Special thanks to [Caneco](https://twitter.com/caneco) for the original logo.
 
 ## Alternatives
 

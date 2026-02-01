@@ -1,6 +1,3 @@
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
-
 # Store strongly typed application settings
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-settings.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-settings)
@@ -97,7 +94,7 @@ return [
 
     /*
      * Each settings class used in your application must be registered, you can
-     * add them (manually) here.
+     * put them (manually) here.
      */
     'settings' => [
 
@@ -109,16 +106,16 @@ return [
     'setting_class_path' => app_path('Settings'),
 
     /*
-     * In these directories settings migrations will be stored and ran when migrating. A settings 
+     * In these directories settings migrations will be stored and ran when migrating. A settings
      * migration created via the make:settings-migration command will be stored in the first path or
      * a custom defined path when running the command.
      */
     'migrations_paths' => [
         database_path('settings'),
-    ]
+    ],
 
     /*
-     * When no repository is set for a settings class, the following repository
+     * When no repository was set for a settings class the following repository
      * will be used for loading and saving settings.
      */
     'default_repository' => 'database',
@@ -157,11 +154,12 @@ return [
         'enabled' => env('SETTINGS_CACHE_ENABLED', false),
         'store' => null,
         'prefix' => null,
+        'ttl' => null,
     ],
 
     /*
      * These global casts will be automatically used whenever a property within
-     * your settings class isn't the default PHP type.
+     * your settings class isn't a default PHP type.
      */
     'global_casts' => [
         DateTimeInterface::class => Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast::class,
@@ -240,7 +238,7 @@ This command will create a new file in `database/settings` where you can add the
 ```php
 use Spatie\LaravelSettings\Migrations\SettingsMigration;
 
-class CreateGeneralSettings extends SettingsMigration
+return new class extends SettingsMigration
 {
     public function up(): void
     {
@@ -410,6 +408,19 @@ public function up(): void
 }
 ```
 
+#### Checking a property if it exists
+
+There might be times when you want to check if a property exists in the database. This can be done as such:
+
+```php
+public function up(): void
+{
+    if ($this->migrator->exists('general.timezone')) {
+        // do something
+    }
+}
+```
+
 #### Operations in group
 
 When you're working on a big settings class with many properties, it can be a bit cumbersome always to have to prepend the settings group. That's why you can also perform operations within a settings group:
@@ -426,6 +437,19 @@ public function up(): void
         
         $blueprint->delete('timezone');
     });
+}
+```
+
+#### Using different repositories
+
+You can specify a different repository for migration operations:
+
+```php
+public function up(): void
+{
+    $this->migrator->repository('redis');
+    
+    $this->migrator->add('general.site_active', true);
 }
 ```
 
@@ -564,6 +588,17 @@ class DateSettings extends Settings
 
 The package will automatically find the cast and will use it to transform the types between the settings class and repository.
 
+#### Available casts
+
+The package comes with a few built-in casts:
+
+- `DateTimeInterfaceCast` for objects implementing `DateTimeInterface` (`DateTime`, `DateTimeImmutable`, `Carbon`, `CarbonImmutable`)
+- `DateTimeZoneCast` for `DateTimeZone` objects
+- `DataCast` for `Spatie\LaravelData\Data` objects
+- `DataArrayCast` for arrays of `Spatie\LaravelData\Data` objects
+- `EnumCast` for native PHP enums
+- `CollectionCast` for `Illuminate\Support\Collection` objects
+
 #### Typing properties
 
 There are quite a few options to type properties. You could type them in PHP:
@@ -625,6 +660,30 @@ class DateSettings extends Settings
     }
 }
 ```
+
+### Default values
+
+As we've seen earlier, it is required to define migrations for each property of your setting classes otherwise a `MissingSettings` exception is thrown.
+
+Sometimes, certain setting classes are used in paths throughout your application which run before migrations, or sometimes it can take quite a while before the migrations are run. In these cases, it can be useful to define default values for your properties:
+
+```php
+class GeneralSettings extends Settings
+{
+    public string $site_name = 'Spatie';
+
+    public bool $site_active = true;
+    
+    public static function group(): string
+    {
+        return 'general';
+    }
+}
+```
+
+These default properties will then be used when no migrated value is found in the repository. This way, you can avoid the `MissingSettings` exception.
+
+In order to get no `MissingSettings` exception make sure to add default values to every property of your settings class, since property values are resolved in one go.
 
 ### Locking properties
 
@@ -796,6 +855,20 @@ You can always clear the cached settings with the following command:
 
 ```bash
 php artisan settings:clear-cache
+```
+
+By default, each settings class will be stored into the cache as `prefix.Fully\Qualified\ClassName`. You can override this key by implementing the `cacheKey` method in your settings class:
+
+```php
+class GeneralSettings extends Settings
+{
+    // ...
+    
+    public function cacheKey(): string
+    {
+        return 'my_custom_cache_key';
+    }
+}
 ```
 
 ### Auto discovering settings classes
@@ -979,9 +1052,9 @@ A good example here is the `DateTimeInterfaceCast` we've added by default in the
     ...
 ```
 
-Whenever the package detects a `Carbon`, `CarbonImmutable`, `DateTime`, or `DateTimeImmutable` type as the type of one of a settings class's properties. It will use the `DateTimeInterfaceCast` as a caster. This because `Carbon`, `CarbonImmutable`, `DateTime` and `DateTimeImmutable` all implement `DateTimeInterface`. The key that was used in `settings.php` to represent the cast.
+Whenever the package detects a `Carbon`, `CarbonImmutable`, `DateTime`, or `DateTimeImmutable` type as the type of one of a settings class's properties, it will use the `DateTimeInterfaceCast` as a caster. This because `Carbon`, `CarbonImmutable`, `DateTime` and `DateTimeImmutable` all implement `DateTimeInterface`. The key that was used in `settings.php` to represent the cast.
 
-The type injected in the caster will be the type of the property. So let's say you have a property with the type `DateTime` within your settings class. When casting this property, the `DateTimeInterfaceCast` will receive `DateTime:class` as a type. 
+The type injected in the caster will be the type of the property. So let's say you have a property with the type `DateTime` within your settings class. When casting this property, the `DateTimeInterfaceCast` will receive `DateTime::class` as a type. 
 
 
 ### Repositories
@@ -990,7 +1063,7 @@ There are two types of repositories included in the package, the `redis` and `da
 
 #### Database repository
 
-The database repository has two optional configuration options:
+The database repository has three optional configuration options:
 
 - `model` the Eloquent model used to load/save properties to the database
 - `table` the table used in the database

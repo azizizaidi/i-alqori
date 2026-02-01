@@ -349,6 +349,46 @@ it('can remove all table filters', function () {
 });
 ```
 
+### Hidden filters
+
+To ensure that a particular user cannot see a filter, you can use the `assertTableFilterVisible()` and `assertTableFilterHidden()` methods:
+
+```php
+use function Pest\Livewire\livewire;
+
+it('shows the correct filters', function () {
+    livewire(PostsTable::class)
+        ->assertTableFilterVisible('created_at')
+        ->assertTableFilterHidden('author');
+```
+
+### Filter existence
+
+To ensure that a filter exists, you can use the `assertTableFilterExists()` method:
+
+```php
+use function Pest\Livewire\livewire;
+
+it('has an author filter', function () {
+    livewire(PostResource\Pages\ListPosts::class)
+        ->assertTableFilterExists('author');
+});
+```
+
+You may pass a function as an additional argument in order to assert that a filter passes a given "truth test". This is useful for asserting that a filter has a specific configuration:
+
+```php
+use function Pest\Livewire\livewire;
+use Filament\Tables\Filters\SelectFilter;
+
+it('has an author filter', function () {    
+    livewire(PostResource\Pages\ListPosts::class)
+        ->assertTableFilterExists('author', function (SelectFilter $column): bool {
+            return $column->getLabel() === 'Select author';
+        });
+});
+```
+
 ## Actions
 
 ### Calling actions
@@ -489,6 +529,28 @@ it('can load existing post data for editing', function () {
 });
 ```
 
+You may also find it useful to pass a function to the `assertTableActionDataSet()` and `assertTableBulkActionDataSet()` methods, which allow you to access the form `$state` and perform additional assertions:
+
+```php
+use Illuminate\Support\Str;
+use function Pest\Livewire\livewire;
+
+it('can automatically generate a slug from the title without any spaces', function () {
+    $post = Post::factory()->create();
+
+    livewire(PostResource\Pages\ListPosts::class)
+        ->mountTableAction(EditAction::class, $post)
+        ->assertTableActionDataSet(function (array $state) use ($post): array {
+            expect($state['slug'])
+                ->not->toContain(' ');
+                
+            return [
+                'slug' => Str::slug($post->title),
+            ];
+        });
+});
+```
+
 ### Action state
 
 To ensure that an action or bulk action exists or doesn't in a table, you can use the `assertTableActionExists()` / `assertTableActionDoesNotExist()` or  `assertTableBulkActionExists()` / `assertTableBulkActionDoesNotExist()` method:
@@ -563,10 +625,10 @@ it('delete actions have correct labels', function () {
     $post = Post::factory()->create();
 
     livewire(PostResource\Pages\ListPosts::class)
-        ->assertTableActionHasLabel('delete', 'Archive Post')
-        ->assertTableActionDoesNotHaveLabel('delete', 'Delete');
-        ->assertTableBulkActionHasLabel('delete', 'Archive Post')
-        ->assertTableBulkActionDoesNotHaveLabel('delete', 'Delete');
+        ->assertTableActionHasLabel('delete', 'Archive Post', $post)
+        ->assertTableActionDoesNotHaveLabel('delete', 'Delete', $post);
+        ->assertTableBulkActionHasLabel('delete', 'Archive Post', $post)
+        ->assertTableBulkActionDoesNotHaveLabel('delete', 'Delete', $post);
 });
 ```
 
@@ -579,10 +641,10 @@ it('delete actions have correct icons', function () {
     $post = Post::factory()->create();
 
     livewire(PostResource\Pages\ListPosts::class)
-        ->assertTableActionHasIcon('delete', 'heroicon-m-archive-box')
-        ->assertTableActionDoesNotHaveIcon('delete', 'heroicon-m-trash');
-        ->assertTableBulkActionHasIcon('delete', 'heroicon-m-archive-box')
-        ->assertTableBulkActionDoesNotHaveIcon('delete', 'heroicon-m-trash');
+        ->assertTableActionHasIcon('delete', 'heroicon-m-archive-box', $post)
+        ->assertTableActionDoesNotHaveIcon('delete', 'heroicon-m-trash', $post);
+        ->assertTableBulkActionHasIcon('delete', 'heroicon-m-archive-box', $post)
+        ->assertTableBulkActionDoesNotHaveIcon('delete', 'heroicon-m-trash', $post);
 });
 ```
 
@@ -595,10 +657,10 @@ it('delete actions have correct colors', function () {
     $post = Post::factory()->create();
 
     livewire(PostResource\Pages\ListPosts::class)
-        ->assertTableActionHasColor('delete', 'warning')
-        ->assertTableActionDoesNotHaveColor('delete', 'danger');
-        ->assertTableBulkActionHasColor('delete', 'warning')
-        ->assertTableBulkActionDoesNotHaveColor('delete', 'danger');
+        ->assertTableActionHasColor('delete', 'warning', $post)
+        ->assertTableActionDoesNotHaveColor('delete', 'danger', $post);
+        ->assertTableBulkActionHasColor('delete', 'warning', $post)
+        ->assertTableBulkActionDoesNotHaveColor('delete', 'danger', $post);
 });
 ```
 
@@ -613,10 +675,10 @@ it('links to the correct Filament sites', function () {
     $post = Post::factory()->create();
 
     livewire(PostResource\Pages\ListPosts::class)
-        ->assertTableActionHasUrl('filament', 'https://filamentphp.com/')
-        ->assertTableActionDoesNotHaveUrl('filament', 'https://github.com/filamentphp/filament')
-        ->assertTableActionShouldOpenUrlInNewTab('filament')
-        ->assertTableActionShouldNotOpenUrlInNewTab('github');
+        ->assertTableActionHasUrl('filament', 'https://filamentphp.com/', $post)
+        ->assertTableActionDoesNotHaveUrl('filament', 'https://github.com/filamentphp/filament', $post)
+        ->assertTableActionShouldOpenUrlInNewTab('filament', $post)
+        ->assertTableActionShouldNotOpenUrlInNewTab('github', $post);
 });
 ```
 
@@ -637,6 +699,8 @@ it('can average values in a column', function () {
 ```
 
 The first argument is the column name, the second is the summarizer ID, and the third is the expected value.
+
+Note that the expected and actual values are normalized, such that `123.12` is considered the same as `"123.12"`, and `['Fred', 'Jim']` is the same as `['Jim', 'Fred']`.
 
 You may set a summarizer ID by passing it to the `make()` method:
 

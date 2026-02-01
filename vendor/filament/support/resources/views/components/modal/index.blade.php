@@ -1,6 +1,7 @@
 @php
     use Filament\Support\Enums\Alignment;
     use Filament\Support\Enums\MaxWidth;
+    use Filament\Support\Facades\FilamentView;
 @endphp
 
 @props([
@@ -34,8 +35,10 @@
 
 @php
     $hasDescription = filled($description);
+    $hasFooter = (! \Filament\Support\is_slot_empty($footer)) || (is_array($footerActions) && count($footerActions)) || (! is_array($footerActions) && (! \Filament\Support\is_slot_empty($footerActions)));
     $hasHeading = filled($heading);
     $hasIcon = filled($icon);
+    $hasSlot = ! \Filament\Support\is_slot_empty($slot);
 
     if (! $alignment instanceof Alignment) {
         $alignment = filled($alignment) ? (Alignment::tryFrom($alignment) ?? $alignment) : null;
@@ -69,7 +72,7 @@
             this.isOpen = false
 
             this.$refs.modalContainer.dispatchEvent(
-                new CustomEvent('modal-closed', { id: '{{ $id }}' }),
+                new CustomEvent('modal-closed', { detail: { id: '{{ $id }}' } }),
             )
         },
 
@@ -77,8 +80,12 @@
             this.$nextTick(() => {
                 this.isOpen = true
 
+                @if (FilamentView::hasSpaMode())
+                    this.$dispatch('ax-modal-opened')
+                @endif
+
                 this.$refs.modalContainer.dispatchEvent(
-                    new CustomEvent('modal-opened', { id: '{{ $id }}' }),
+                    new CustomEvent('modal-opened', { detail: { id: '{{ $id }}' } }),
                 )
             })
         },
@@ -86,6 +93,7 @@
     @if ($id)
         x-on:{{ $closeEventName }}.window="if ($event.detail.id === '{{ $id }}') close()"
         x-on:{{ $openEventName }}.window="if ($event.detail.id === '{{ $id }}') open()"
+        data-fi-modal-id="{{ $id }}"
     @endif
     x-trap.noscroll{{ $autofocus ? '' : '.noautofocus' }}="isOpen"
     x-bind:class="{
@@ -99,7 +107,9 @@
 >
     @if ($trigger)
         <div
-            x-on:click="open"
+            @if (! $trigger->attributes->get('disabled'))
+                x-on:click="open"
+            @endif
             {{ $trigger->attributes->class(['fi-modal-trigger flex cursor-pointer']) }}
         >
             {{ $trigger }}
@@ -166,6 +176,9 @@
                         x-transition:leave-start="scale-100 opacity-100"
                         x-transition:leave-end="scale-95 opacity-0"
                     @endif
+                    @if (filled($id))
+                        wire:key="{{ isset($this) ? "{$this->getId()}." : '' }}modal.{{ $id }}.window"
+                    @endif
                     {{
                         ($extraModalWindowAttributeBag ?? new \Illuminate\View\ComponentAttributeBag)->class([
                             'fi-modal-window pointer-events-auto relative row-start-2 flex w-full cursor-default flex-col bg-white shadow-xl ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10',
@@ -205,8 +218,12 @@
                 >
                     @if ($heading || $header)
                         <div
+                            @if (filled($id))
+                                wire:key="{{ isset($this) ? "{$this->getId()}." : '' }}modal.{{ $id }}.header"
+                            @endif
                             @class([
                                 'fi-modal-header flex px-6 pt-6',
+                                'pb-6' => (! $hasSlot) && (! $hasFooter),
                                 'fi-sticky sticky top-0 z-10 border-b border-gray-200 bg-white pb-6 dark:border-white/10 dark:bg-gray-900' => $stickyHeader,
                                 'rounded-t-xl' => $stickyHeader && ! ($slideOver || ($width === MaxWidth::Screen)),
                                 match ($alignment) {
@@ -289,7 +306,12 @@
                                         'text-center' => $alignment === Alignment::Center,
                                     ])
                                 >
-                                    <x-filament::modal.heading>
+                                    <x-filament::modal.heading
+                                        @class([
+                                            'me-6' => $closeButton && ((! $hasIcon) || in_array($alignment, [Alignment::Start, Alignment::Left])),
+                                            'ms-6' => $closeButton && (! $hasIcon) && ($alignment === Alignment::Center),
+                                        ])
+                                    >
                                         {{ $heading }}
                                     </x-filament::modal.heading>
 
@@ -305,8 +327,11 @@
                         </div>
                     @endif
 
-                    @if (! \Filament\Support\is_slot_empty($slot))
+                    @if ($hasSlot)
                         <div
+                            @if (filled($id))
+                                wire:key="{{ isset($this) ? "{$this->getId()}." : '' }}modal.{{ $id }}.content"
+                            @endif
                             @class([
                                 'fi-modal-content flex flex-col gap-y-4 py-6',
                                 'flex-1' => ($width === MaxWidth::Screen) || $slideOver,
@@ -318,8 +343,11 @@
                         </div>
                     @endif
 
-                    @if ((! \Filament\Support\is_slot_empty($footer)) || (is_array($footerActions) && count($footerActions)) || (! is_array($footerActions) && (! \Filament\Support\is_slot_empty($footerActions))))
+                    @if ($hasFooter)
                         <div
+                            @if (filled($id))
+                                wire:key="{{ isset($this) ? "{$this->getId()}." : '' }}modal.{{ $id }}.footer"
+                            @endif
                             @class([
                                 'fi-modal-footer w-full',
                                 'pe-6 ps-[5.25rem]' => $hasIcon && ($alignment === Alignment::Start) && ($footerActionsAlignment !== Alignment::Center) && (! $stickyFooter),
@@ -327,7 +355,7 @@
                                 'fi-sticky sticky bottom-0 border-t border-gray-200 bg-white py-5 dark:border-white/10 dark:bg-gray-900' => $stickyFooter,
                                 'rounded-b-xl' => $stickyFooter && ! ($slideOver || ($width === MaxWidth::Screen)),
                                 'pb-6' => ! $stickyFooter,
-                                'mt-6' => (! $stickyFooter) && \Filament\Support\is_slot_empty($slot),
+                                'mt-6' => (! $stickyFooter) && (! $hasSlot),
                                 'mt-auto' => $slideOver,
                             ])
                         >

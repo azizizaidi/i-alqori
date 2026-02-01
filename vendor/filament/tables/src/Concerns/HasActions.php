@@ -113,8 +113,6 @@ trait HasActions
             ]);
 
             $result = $action->callAfter() ?? $result;
-
-            $action->commitDatabaseTransaction();
         } catch (Halt $exception) {
             $exception->shouldRollbackDatabaseTransaction() ?
                 $action->rollBackDatabaseTransaction() :
@@ -141,6 +139,8 @@ trait HasActions
 
             throw $exception;
         }
+
+        $action->commitDatabaseTransaction();
 
         if (store($this)->has('redirect')) {
             return $result;
@@ -306,6 +306,7 @@ trait HasActions
         try {
             return array_pop($this->mountedTableActions);
         } finally {
+            array_pop($this->mountedTableActionsArguments);
             array_pop($this->mountedTableActionsData);
         }
     }
@@ -317,7 +318,7 @@ trait HasActions
         $this->mountedTableActionsData = [];
     }
 
-    public function unmountTableAction(bool $shouldCancelParentActions = true): void
+    public function unmountTableAction(bool $shouldCancelParentActions = true, bool $shouldCloseModal = true): void
     {
         $action = $this->getMountedTableAction();
 
@@ -341,7 +342,9 @@ trait HasActions
         }
 
         if (! count($this->mountedTableActions)) {
-            $this->closeTableActionModal();
+            if ($shouldCloseModal) {
+                $this->closeTableActionModal();
+            }
 
             $action?->record(null);
             $this->mountedTableActionRecord(null);

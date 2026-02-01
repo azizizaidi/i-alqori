@@ -19,17 +19,17 @@ class ForceDeleteAction extends Action
     {
         parent::setUp();
 
+        $this->requiresConfirmation();
+
         $this->label(__('filament-actions::force-delete.single.label'));
 
         $this->modalHeading(fn (): string => __('filament-actions::force-delete.single.modal.heading', ['label' => $this->getRecordTitle()]));
 
         $this->modalSubmitActionLabel(__('filament-actions::force-delete.single.modal.actions.delete.label'));
 
-        $this->color('danger');
+        $this->defaultColor('danger');
 
         $this->groupedIcon(FilamentIcon::resolve('actions::force-delete-action.grouped') ?? 'heroicon-m-trash');
-
-        $this->requiresConfirmation();
 
         $this->modalIcon(FilamentIcon::resolve('actions::force-delete-action.modal') ?? 'heroicon-o-trash');
 

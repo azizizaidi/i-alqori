@@ -51,9 +51,20 @@ Textarea::make('description')
 
 There are a few differences, compared to [`disabled()`](getting-started#disabling-a-field):
 
-- When using `readOnly()`, the field will still be sent to the server when the form is submitted. It can be mutated with the browser console, or via JavaScript. You can use [`dehydrated(false)`](advanced#preventing-a-field-from-being-dehydrated) to prevent this.
+- When using `readOnly()`, the field will still be sent to the server when the form is submitted. It can be mutated with the browser console, or via JavaScript. You can use [`dehydrated(false)`](../advanced#preventing-a-field-from-being-dehydrated) to prevent this.
 - There are no styling changes, such as less opacity, when using `readOnly()`.
 - The field is still focusable when using `readOnly()`.
+
+## Disabling Grammarly checks
+
+If the user has Grammarly installed and you would like to prevent it from analyzing the contents of the textarea, you can use the `disableGrammarly()` method:
+
+```php
+use Filament\Forms\Components\Textarea;
+
+Textarea::make('description')
+    ->disableGrammarly()
+```
 
 ## Textarea validation
 

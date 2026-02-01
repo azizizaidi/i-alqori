@@ -6,19 +6,13 @@ use Illuminate\Database\ConnectionResolverInterface;
 use Spatie\Health\Checks\Check;
 use Spatie\Health\Checks\Result;
 use Spatie\Health\Support\DbConnectionInfo;
+use Spatie\Health\Traits\HasDatabaseConnection;
 
 class DatabaseSizeCheck extends Check
 {
-    protected ?string $connectionName = null;
+    use HasDatabaseConnection;
 
     protected float $failWhenSizeAboveGb = 1;
-
-    public function connectionName(string $connectionName): self
-    {
-        $this->connectionName = $connectionName;
-
-        return $this;
-    }
 
     public function failWhenSizeAboveGb(float $errorThresholdGb): self
     {
@@ -42,17 +36,12 @@ class DatabaseSizeCheck extends Check
             : $result->ok();
     }
 
-    protected function getDefaultConnectionName(): string
-    {
-        return config('database.default');
-    }
-
     protected function getDatabaseSizeInGb(): float
     {
         $connectionName = $this->connectionName ?? $this->getDefaultConnectionName();
 
         $connection = app(ConnectionResolverInterface::class)->connection($connectionName);
 
-        return round((new DbConnectionInfo())->databaseSizeInMb($connection) / 1000, 2);
+        return round((new DbConnectionInfo)->databaseSizeInMb($connection) / 1000, 2);
     }
 }

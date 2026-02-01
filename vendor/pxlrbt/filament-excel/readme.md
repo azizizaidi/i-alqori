@@ -411,6 +411,54 @@ class CustomExport extends ExcelExport
 }
 ```
 
+## Multiple sheets
+
+By default, the package will only generate the sheet containing the data. However, it is possible to add additional custom sheets before and after the data sheet. 
+
+```php
+ExportBulkAction::make()->exports([
+    ExcelExport::make('user_export')->fromTable()
+        ->withSheets(
+            sheets: [
+                new OverriddenDataSheet(),
+            ],
+            prepend: [
+                new CoverSheet(),
+            ],
+            append: [
+                new AppendixSheet(),
+            ]
+        )
+])
+```
+
+The array of classes that are passed to `->withSheets()` should be sheet classes as detailed [here](https://docs.laravel-excel.com/3.1/exports/multiple-sheets.html#sheet-classes)
+
+It is also possible to pass an array of sheet classes to `->withSheets(sheets: array)` which will override the default data sheet.
+
+
+## File download URL customization
+
+By default, the package generates a signed URL with a default expiration time of 24 hours. 
+The URL contains the filename including the extension. Some WAF (Web Application Firewall) solutions can block the URL due to the fact that it links to a file, which contains parameters and can cause a false positive.
+
+```php
+// Somewhere in a ServiceProvider in the `boot()` method.
+use pxlrbt\FilamentExcel\FilamentExport;
+
+FilamentExport::createExportUrlUsing(function ($export) {
+    $fileInfo = pathinfo($export['filename']);
+    $filenameWithoutExtension = $fileInfo['filename'];
+    $extension = $fileInfo['extension'];
+
+    return URL::temporarySignedRoute(
+        'your-custom-route',
+        now()->addHours(2),
+        ['path' => $filenameWithoutExtension, 'extension' => $extension]
+    );
+});
+```
+
 ## Contributing
 
 If you want to contribute to this packages, you may want to test it in a real Filament project:

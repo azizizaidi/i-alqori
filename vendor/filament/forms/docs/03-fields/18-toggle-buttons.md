@@ -68,6 +68,8 @@ If you are using an enum for the options, you can use the [`HasIcon` interface](
 
 <AutoScreenshot name="forms/fields/toggle-buttons/icons" alt="Toggle buttons with icons" version="3.x" />
 
+If you want to display only icons, you can use `hiddenButtonLabels()` to hide the option labels.
+
 ## Boolean options
 
 If you want a simple boolean toggle button group, with "Yes" and "No" options, you can use the `boolean()` method:
@@ -158,7 +160,7 @@ ToggleButtons::make('technologies')
 
 <AutoScreenshot name="forms/fields/toggle-buttons/columns" alt="Toggle buttons with 2 columns" version="3.x" />
 
-This method accepts the same options as the `columns()` method of the [grid](layout/grid). This allows you to responsively customize the number of columns at various breakpoints.
+This method accepts the same options as the `columns()` method of the [grid](../layout/grid). This allows you to responsively customize the number of columns at various breakpoints.
 
 ### Setting the grid direction
 

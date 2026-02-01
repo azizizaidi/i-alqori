@@ -5,6 +5,7 @@ namespace Spatie\Health\Commands;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Health\Checks\Check;
 use Spatie\Health\Checks\Result;
 use Spatie\Health\Enums\Status;
@@ -25,6 +26,12 @@ class RunHealthChecksCommand extends Command
 
     public function handle(): int
     {
+        if (Cache::get(PauseHealthChecksCommand::CACHE_KEY)) {
+            $this->info('Checks paused');
+
+            return self::SUCCESS;
+        }
+
         $this->info('Running checks...');
 
         $results = $this->runChecks();
@@ -74,13 +81,24 @@ class RunHealthChecksCommand extends Command
     /** @return Collection<int, Result> */
     protected function runChecks(): Collection
     {
-        return app(Health::class)
-            ->registeredChecks()
-            ->map(function (Check $check): Result {
-                return $check->shouldRun()
-                    ? $this->runCheck($check)
-                    : (new Result(Status::skipped()))->check($check)->endedAt(now());
-            });
+        [$shouldRun, $skipped] = $this->splitChecksByShouldRun(
+            app(Health::class)->registeredChecks()
+        );
+
+        // retain original order
+        return $skipped->mapWithKeys(fn (Check $check, $i) => [
+            $i => (new Result(Status::skipped()))->check($check)->endedAt(now()),
+        ])->union(
+            $shouldRun->mapWithKeys(fn (Check $check, $i) => [
+                $i => $this->runCheck($check),
+            ])
+        )->sortKeys();
+    }
+
+    /** @return array{Collection<int, Check>, Collection<int, Check>}  */
+    protected function splitChecksByShouldRun(Collection $checks): Collection
+    {
+        return $checks->partition(fn (Check $check) => $check->shouldRun());
     }
 
     /** @param  Collection<int, Result>  $results */
@@ -132,7 +150,7 @@ class RunHealthChecksCommand extends Command
             Status::ok() => $this->info($okMessage),
             Status::warning() => $this->comment("{$status}: {$result->getNotificationMessage()}"),
             Status::failed() => $this->error("{$status}: {$result->getNotificationMessage()}"),
-            Status::crashed() => $this->error("{$status}}: `{$exception?->getMessage()}`"),
+            Status::crashed() => $this->error("{$status}: `{$exception?->getMessage()}`"),
             default => null,
         };
     }

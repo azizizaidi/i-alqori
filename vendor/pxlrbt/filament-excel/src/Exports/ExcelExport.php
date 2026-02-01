@@ -3,10 +3,10 @@
 namespace pxlrbt\FilamentExcel\Exports;
 
 use AnourValar\EloquentSerialize\Facades\EloquentSerializeFacade;
+use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Concerns\EvaluatesClosures;
-use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -19,6 +19,8 @@ use Maatwebsite\Excel\Concerns\WithCustomChunkSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings as HasHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping as HasMapping;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use pxlrbt\FilamentExcel\Events\ExportFinishedEvent;
 use pxlrbt\FilamentExcel\Exports\Concerns\CanIgnoreFormatting;
@@ -32,12 +34,13 @@ use pxlrbt\FilamentExcel\Exports\Concerns\WithColumns;
 use pxlrbt\FilamentExcel\Exports\Concerns\WithFilename;
 use pxlrbt\FilamentExcel\Exports\Concerns\WithHeadings;
 use pxlrbt\FilamentExcel\Exports\Concerns\WithMapping;
+use pxlrbt\FilamentExcel\Exports\Concerns\WithSheets;
 use pxlrbt\FilamentExcel\Exports\Concerns\WithWidths;
 use pxlrbt\FilamentExcel\Exports\Concerns\WithWriterType;
 use pxlrbt\FilamentExcel\Interactions\AskForFilename;
 use pxlrbt\FilamentExcel\Interactions\AskForWriterType;
 
-class ExcelExport implements FromQuery, HasHeadings, HasMapping, ShouldAutoSize, WithColumnFormatting, WithColumnWidths, WithCustomChunkSize, WithEvents
+class ExcelExport implements FromQuery, HasHeadings, HasMapping, ShouldAutoSize, WithColumnFormatting, WithColumnWidths, WithCustomChunkSize, WithEvents, WithMultipleSheets, WithTitle
 {
     use AskForFilename;
     use AskForWriterType;
@@ -59,6 +62,7 @@ class ExcelExport implements FromQuery, HasHeadings, HasMapping, ShouldAutoSize,
     use WithFilename;
     use WithHeadings;
     use WithMapping;
+    use WithSheets;
     use WithWidths;
     use WithWriterType;
 
@@ -112,6 +116,11 @@ class ExcelExport implements FromQuery, HasHeadings, HasMapping, ShouldAutoSize,
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function title(): string
+    {
+        return $this->getLabel();
     }
 
     public function label(string $label): static
@@ -189,10 +198,14 @@ class ExcelExport implements FromQuery, HasHeadings, HasMapping, ShouldAutoSize,
             return $this->model;
         }
 
-        if (($resource = $this->getResourceClass()) !== null) {
+        $table = $this->getLivewire()->getTable();
+
+        if (($relationship = $table->getRelationship()) !== null) {
+            $model = get_class($relationship->getRelated());
+        } elseif (($resource = $this->getResourceClass()) !== null) {
             $model = $resource::getModel();
-        } elseif (($livewire = $this->getLivewire()) instanceof HasTable) {
-            $model = $livewire->getTable()->getModel();
+        } else {
+            $model = $table->getModel();
         }
 
         return $this->model ??= $model;
@@ -221,11 +234,12 @@ class ExcelExport implements FromQuery, HasHeadings, HasMapping, ShouldAutoSize,
         $this->prepareQueuedExport();
 
         $filename = Str::uuid().'-'.$this->getFilename();
-        $userId = auth()->id();
+        $userId = Filament::auth()->id();
+        $locale = app()->getLocale();
 
         $this
             ->queueExport($filename, 'filament-excel', $this->getWriterType())
-            ->chain([fn () => ExportFinishedEvent::dispatch($filename, $userId)]);
+            ->chain([fn () => ExportFinishedEvent::dispatch($filename, $userId, $locale)]);
 
         Notification::make()
             ->title(__('filament-excel::notifications.queued.title'))

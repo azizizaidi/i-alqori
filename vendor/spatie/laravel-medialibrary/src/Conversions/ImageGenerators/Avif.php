@@ -7,15 +7,13 @@ use Spatie\MediaLibrary\Conversions\Conversion;
 
 class Avif extends ImageGenerator
 {
-    public function convert(string $file, Conversion $conversion = null): string
+    public function convert(string $file, ?Conversion $conversion = null): string
     {
         $pathToImageFile = pathinfo($file, PATHINFO_DIRNAME).'/'.pathinfo($file, PATHINFO_FILENAME).'.png';
 
         $image = imagecreatefromavif($file);
 
         imagepng($image, $pathToImageFile, 9);
-
-        imagedestroy($image);
 
         return $pathToImageFile;
     }
@@ -27,10 +25,6 @@ class Avif extends ImageGenerator
         }
 
         if (! function_exists('imagepng')) {
-            return false;
-        }
-
-        if (! function_exists('imagedestroy')) {
             return false;
         }
 

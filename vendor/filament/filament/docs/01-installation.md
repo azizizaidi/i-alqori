@@ -17,7 +17,7 @@ Filament requires the following to run:
 Install the Filament Panel Builder by running the following commands in your Laravel project directory:
 
 ```bash
-composer require filament/filament:"^3.2" -W
+composer require filament/filament:"^3.3" -W
 
 php artisan filament:install --panels
 ```
@@ -38,7 +38,7 @@ Open `/admin` in your web browser, sign in, and start building your app!
 Not sure where to start? Review the [Getting Started guide](getting-started) to learn how to build a complete Filament admin panel.
 
 ## Using other Filament packages
-The Filament Panel Builder pre-installs the [Form Builder](/docs/forms), [Table Builder](/docs/tables), [Notifications](/docs/notifications), [Actions](/docs/actions), [Infolists](/docs/infolists), and [Widgets](/docs/widgets) packages. No other installation steps are required to use these packages within a panel.
+The Filament Panel Builder pre-installs the [Form Builder](../forms/installation), [Table Builder](../tables/installation), [Notifications](../notifications/installation), [Actions](../actions/installation), [Infolists](../infolists/installation), and [Widgets](../widgets/installation) packages. No other installation steps are required to use these packages within a panel.
 
 ## Improving Filament panel performance
 
@@ -86,7 +86,7 @@ You should also consider optimizing your Laravel app for production by running `
 
 ### Allowing users to access a panel
 
-By default, all `User` models can access Filament locally. However, when deploying to production, you must update your `App\Models\User.php` to implement the `FilamentUser` contract — ensuring that only the correct users can access your panel:
+By default, all `User` models can access Filament locally. However, when deploying to production or running unit tests, you must update your `App\Models\User.php` to implement the `FilamentUser` contract — ensuring that only the correct users can access your panel:
 
 ```php
 <?php
@@ -111,6 +111,12 @@ class User extends Authenticatable implements FilamentUser
 > If you don't complete these steps, a 403 Forbidden error will be returned when accessing the app in production.
 
 Learn more about [users](users).
+
+### Using a production-ready storage disk
+
+Filament has a storage disk defined in the [configuration](#publishing-configuration), which by default is set to `public`. You can set the `FILAMENT_FILESYSTEM_DISK` environment variable to change this.
+
+The `public` disk, while great for easy local development, is not suitable for production. It does not support file visibility, so features of Filament such as [file uploads](../forms/fields/file-upload) will create public files. In production, you need to use a production-ready disk such as `s3` with a private access policy, to prevent unauthorized access to the uploaded files.
 
 ## Publishing configuration
 

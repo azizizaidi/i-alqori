@@ -11,6 +11,13 @@ namespace Filament\Tables\Columns {
             return $this;
         }
     }
+    class TextInputColumn
+    {
+        public function currencyMask($thousandSeparator = ',', $decimalSeparator = '.', $precision = 2): self
+        {
+            return $this;
+        }
+    }
 }
 
 namespace Filament\Forms\Components {
@@ -27,6 +34,14 @@ namespace Filament\Forms\Components {
 namespace Filament\Tables\Columns\Summarizers {
 
     use Closure;
+
+    class Summarizer
+    {
+        public function currency(string | Closure | null $currency = null, bool $shouldConvert = false): self
+        {
+            return $this;
+        }
+    }
 
     class Average
     {

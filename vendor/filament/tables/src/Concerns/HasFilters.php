@@ -4,7 +4,9 @@ namespace Filament\Tables\Concerns;
 
 use Filament\Forms\Form;
 use Filament\Tables\Filters\BaseFilter;
+use Filament\Tables\Filters\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 
 /**
  * @property Form $tableFiltersForm
@@ -66,20 +68,25 @@ trait HasFilters
         $filterResetState = $filter->getResetState();
 
         $filterFormGroup = $this->getTableFiltersForm()->getComponent($filterName);
-        $filterFields = $filterFormGroup?->getChildComponentContainer()->getFlatFields();
 
-        if (filled($field) && array_key_exists($field, $filterFields)) {
-            $filterFields = [$field => $filterFields[$field]];
-        }
+        if (($filter instanceof QueryBuilder) && blank($field)) {
+            $filterFormGroup->getChildComponentContainer()->fill();
+        } else {
+            $filterFields = $filterFormGroup?->getChildComponentContainer()->getFlatFields();
 
-        foreach ($filterFields as $fieldName => $field) {
-            $state = $field->getState();
+            if (filled($field) && array_key_exists($field, $filterFields)) {
+                $filterFields = [$field => $filterFields[$field]];
+            }
 
-            $field->state($filterResetState[$fieldName] ?? match (true) {
-                is_array($state) => [],
-                is_bool($state) => false,
-                default => null,
-            });
+            foreach ($filterFields as $fieldName => $field) {
+                $state = $field->getState();
+
+                $field->state($filterResetState[$fieldName] ?? match (true) {
+                    is_array($state) => [],
+                    is_bool($state) => false,
+                    default => null,
+                });
+            }
         }
 
         if ($isRemovingAllFilters) {
@@ -140,20 +147,18 @@ trait HasFilters
 
     protected function applyFiltersToTableQuery(Builder $query): Builder
     {
-        $data = $this->tableFilters;
-
         foreach ($this->getTable()->getFilters() as $filter) {
             $filter->applyToBaseQuery(
                 $query,
-                $data[$filter->getName()] ?? [],
+                $this->getTableFilterState($filter->getName()) ?? [],
             );
         }
 
-        return $query->where(function (Builder $query) use ($data) {
+        return $query->where(function (Builder $query) {
             foreach ($this->getTable()->getFilters() as $filter) {
                 $filter->apply(
                     $query,
-                    $data[$filter->getName()] ?? [],
+                    $this->getTableFilterState($filter->getName()) ?? [],
                 );
             }
         });
@@ -161,7 +166,7 @@ trait HasFilters
 
     public function getTableFilterState(string $name): ?array
     {
-        return $this->tableFilters[$this->parseTableFilterName($name)] ?? null;
+        return Arr::get($this->tableFilters, $this->parseTableFilterName($name));
     }
 
     public function parseTableFilterName(string $name): string
@@ -179,7 +184,7 @@ trait HasFilters
 
     public function getTableFiltersSessionKey(): string
     {
-        $table = class_basename($this::class);
+        $table = md5($this::class);
 
         return "tables.{$table}_filters";
     }

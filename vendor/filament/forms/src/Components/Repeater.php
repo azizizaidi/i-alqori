@@ -8,6 +8,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Concerns\HasReorderAnimationDuration;
 use Filament\Support\Enums\ActionSize;
+use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Collection;
@@ -53,7 +54,11 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
 
     protected string | Closure | null $itemLabel = null;
 
+    protected bool | Closure $hasItemNumbers = false;
+
     protected Field | Closure | null $simpleField = null;
+
+    protected Alignment | string | Closure | null $addActionAlignment = null;
 
     protected ?Closure $modifyRelationshipQueryUsing = null;
 
@@ -194,6 +199,24 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
         }
 
         return $action;
+    }
+
+    public function addActionAlignment(Alignment | string | Closure | null $addActionAlignment): static
+    {
+        $this->addActionAlignment = $addActionAlignment;
+
+        return $this;
+    }
+
+    public function getAddActionAlignment(): Alignment | string | null
+    {
+        $alignment = $this->evaluate($this->addActionAlignment);
+
+        if (is_string($alignment)) {
+            $alignment = Alignment::tryFrom($alignment) ?? $alignment;
+        }
+
+        return $alignment;
     }
 
     public function addAction(?Closure $callback): static
@@ -902,7 +925,9 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
                 ->get()
                 ->each(static fn (Model $record) => $record->delete());
 
-            $childComponentContainers = $component->getChildComponentContainers();
+            $childComponentContainers = $component->getChildComponentContainers(
+                withHidden: $component->shouldSaveRelationshipsWhenHidden(),
+            );
 
             $itemOrder = 1;
             $orderColumn = $component->getOrderColumn();
@@ -987,6 +1012,13 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
     public function itemLabel(string | Closure | null $label): static
     {
         $this->itemLabel = $label;
+
+        return $this;
+    }
+
+    public function itemNumbers(bool | Closure $condition = true): static
+    {
+        $this->hasItemNumbers = $condition;
 
         return $this;
     }
@@ -1115,6 +1147,11 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
     public function hasItemLabels(): bool
     {
         return $this->itemLabel !== null;
+    }
+
+    public function hasItemNumbers(): bool
+    {
+        return (bool) $this->evaluate($this->hasItemNumbers);
     }
 
     public function simple(Field | Closure | null $field): static

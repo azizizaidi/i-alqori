@@ -59,7 +59,7 @@ class ThemesServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->app->singleton(Themes::class, function () {
-            return new Themes();
+            return new Themes;
         });
     }
 

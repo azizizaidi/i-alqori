@@ -1,18 +1,14 @@
 # Filament Spatie Laravel Health
 
-[![PHP Version Require](http://poser.pugx.org/shuvroroy/filament-spatie-laravel-health/require/php)](https://packagist.org/packages/shuvroroy/filament-spatie-laravel-health)
+[![PHP Version Require](https://poser.pugx.org/shuvroroy/filament-spatie-laravel-health/require/php)](https://packagist.org/packages/shuvroroy/filament-spatie-laravel-health)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/shuvroroy/filament-spatie-laravel-health/run-tests.yml?branch=main&label=tests)](https://github.com/shuvroroy/filament-spatie-laravel-health/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![Latest Stable Version](http://poser.pugx.org/shuvroroy/filament-spatie-laravel-health/v)](https://packagist.org/packages/shuvroroy/filament-spatie-laravel-health)
-[![Total Downloads](http://poser.pugx.org/shuvroroy/filament-spatie-laravel-health/downloads)](https://packagist.org/packages/shuvroroy/filament-spatie-laravel-health)
-[![License](http://poser.pugx.org/shuvroroy/filament-spatie-laravel-health/license)](https://packagist.org/packages/shuvroroy/filament-spatie-laravel-health)
+[![Latest Stable Version](https://poser.pugx.org/shuvroroy/filament-spatie-laravel-health/v)](https://packagist.org/packages/shuvroroy/filament-spatie-laravel-health)
+[![Total Downloads](https://poser.pugx.org/shuvroroy/filament-spatie-laravel-health/downloads)](https://packagist.org/packages/shuvroroy/filament-spatie-laravel-health)
+[![License](https://poser.pugx.org/shuvroroy/filament-spatie-laravel-health/license)](https://packagist.org/packages/shuvroroy/filament-spatie-laravel-health)
 
 This package provides a Filament page that you can monitor the health of your application by registering checks using the [spatie/laravel-health](https://spatie.be/docs/laravel-health/v1/introduction) package.
 
 <img width="1486" alt="Screenshot 2023-08-04 at 10 06 01 PM" src="https://github.com/shuvroroy/filament-spatie-laravel-health/assets/21066418/fe0b9b55-04ef-4ea9-b89f-bd6e0cf0964a">
-
-## Support For This Project
-
-<a href="https://www.buymeacoffee.com/shuvroroy" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 ## Installation
 
@@ -101,7 +97,7 @@ class HealthCheckResults extends BaseHealthCheckResults
 
     public function getHeading(): string | Htmlable
     {
-        return 'Health Check Results'
+        return 'Health Check Results';
     }
 
     public static function getNavigationGroup(): ?string
@@ -131,6 +127,34 @@ class AdminPanelProvider extends PanelProvider
             ->plugin(
                 FilamentSpatieLaravelHealthPlugin::make()
                     ->usingPage(HealthCheckResults::class)
+            );
+    }
+}
+```
+
+## Customising who can access the page
+
+You can customise who can access the `Hleath` page by adding an `authorize` method to the plugin.
+The method should return a boolean indicating whether the user is authorised to access the page.
+
+```php
+<?php
+
+namespace App\Providers\Filament;
+
+use Filament\Panel;
+use Filament\PanelProvider;
+use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
+
+class AdminPanelProvider extends PanelProvider
+{
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            // ...
+            ->plugin(
+                FilamentSpatieLaravelHealthPlugin::make()
+                     ->authorize(fn (): bool => auth()->user()->email === 'admin@example.com'),
             );
     }
 }

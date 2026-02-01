@@ -115,6 +115,20 @@ public function panel(Panel $panel): Panel
 }
 ```
 
+If you'd like to set the max content width for pages of the type `SimplePage`, like login and registration pages, you may do so using the `simplePageMaxContentWidth()` method. The default is `Large`:
+
+```php
+use Filament\Panel;
+use Filament\Support\Enums\MaxWidth;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->simplePageMaxContentWidth(MaxWidth::Small);
+}
+```
+
 ## Lifecycle hooks
 
 Hooks may be used to execute code during a panel's lifecycle. `bootUsing()` is a hook that gets run on every request that takes place within that panel. If you have multiple panels, only the current panel's `bootUsing()` will be run. The function gets run from middleware, after all service providers have been booted:
@@ -167,7 +181,7 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-> In this example, we are using [`getUrl()`](/resources/getting-started#generating-urls-to-resource-pages) on a resource to get the URL to the resource's index page. This feature requires the panel to already be registered though, and the configuration is too early in the request lifecycle to do that. You can use a function to return the URLs instead, which will be resolved when the panel has been registered.
+> In this example, we are using [`getUrl()`](resources/getting-started#generating-urls-to-resource-pages) on a resource to get the URL to the resource's index page. This feature requires the panel to already be registered though, and the configuration is too early in the request lifecycle to do that. You can use a function to return the URLs instead, which will be resolved when the panel has been registered.
 
 These URLs need to exactly match the URL that the user is navigating to, including the domain and protocol. If you'd like to use a pattern to match multiple URLs, you can use an asterisk (`*`) as a wildcard character:
 
@@ -230,7 +244,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePost extends CreateRecord
 {
     protected ?bool $hasDatabaseTransactions = false;
-    
+
     // ...
 }
 ```
@@ -254,7 +268,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreatePost extends CreateRecord
 {
     protected ?bool $hasDatabaseTransactions = true;
-    
+
     // ...
 }
 ```
@@ -278,6 +292,8 @@ public function panel(Panel $panel): Panel
         ]);
 }
 ```
+
+Before these [assets](../support/assets) can be used, you'll need to run `php artisan filament:assets`.
 
 ## Applying middleware
 

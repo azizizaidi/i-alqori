@@ -22,6 +22,8 @@ class ForceDeleteBulkAction extends BulkAction
     {
         parent::setUp();
 
+        $this->requiresConfirmation();
+
         $this->label(__('filament-actions::force-delete.multiple.label'));
 
         $this->modalHeading(fn (): string => __('filament-actions::force-delete.multiple.modal.heading', ['label' => $this->getPluralModelLabel()]));
@@ -30,11 +32,9 @@ class ForceDeleteBulkAction extends BulkAction
 
         $this->successNotificationTitle(__('filament-actions::force-delete.multiple.notifications.deleted.title'));
 
-        $this->color('danger');
+        $this->defaultColor('danger');
 
         $this->icon(FilamentIcon::resolve('actions::force-delete-action') ?? 'heroicon-m-trash');
-
-        $this->requiresConfirmation();
 
         $this->modalIcon(FilamentIcon::resolve('actions::force-delete-action.modal') ?? 'heroicon-o-trash');
 

@@ -5,17 +5,49 @@
 
 This package contains a [Laravel Health](https://spatie.be/docs/laravel-health) check that can report any known security issues with the installed PHP packages in your application.
 
-The security advisories are fetched from Packages and are sources from GitHub, and other sources.
+The security advisories are fetched from Packagist and are sourced from GitHub and other sources.
+
+## Usage
+
+You can register this check, typically this happens in a service provider:
 
 ```php
-// typically, in a service provider
-
 use Spatie\Health\Facades\Health;
 use Spatie\SecurityAdvisoriesHealthCheck\SecurityAdvisoriesCheck;
 
 Health::checks([
     SecurityAdvisoriesCheck::new()->retryTimes(5),
 ]);
+```
+
+## Caching
+
+By default, this package will make an HTTP request to Packagist every time the health check runs. To reduce API calls and improve performance, you can enable caching by calling `cacheResultsForMinutes()`:
+
+```php
+use Spatie\Health\Facades\Health;
+use Spatie\SecurityAdvisoriesHealthCheck\SecurityAdvisoriesCheck;
+
+Health::checks([
+    SecurityAdvisoriesCheck::new()
+        ->retryTimes(5)
+        ->cacheResultsForMinutes(60),     // Enables caching for 1 hour
+]);
+```
+
+The package uses Laravel's default cache driver.
+
+### Configuration Options
+
+```php
+SecurityAdvisoriesCheck::new()
+    ->retryTimes(3)                     // Number of retry attempts on failure
+    ->cacheResultsForMinutes(120)       // Cache duration in minutes
+    ->ignorePackage('vendor/package')   // Ignore specific packages
+    ->ignoredPackages([                 // Ignore multiple packages
+        'vendor/package1',
+        'vendor/package2'
+    ]);
 ```
 
 ## Documentation

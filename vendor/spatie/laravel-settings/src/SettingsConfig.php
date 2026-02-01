@@ -16,6 +16,9 @@ class SettingsConfig
     /** @var class-string<\Spatie\LaravelSettings\Settings> */
     private string $settingsClass;
 
+    /** @var array<string> */
+    private array $defaultValueLoadedProperties = [];
+
     /** @var Collection<string, ?\Spatie\LaravelSettings\SettingsCasts\SettingsCast> */
     private Collection $casts;
 
@@ -29,6 +32,8 @@ class SettingsConfig
     private Collection $locked;
 
     private SettingsRepository $repository;
+
+    private bool $loadedFromCache = false;
 
     public function __construct(string $settingsClass)
     {
@@ -123,10 +128,41 @@ class SettingsConfig
         );
     }
 
+    public function markPropertyAsDefaultValueLoaded(string $name): self
+    {
+        $this->defaultValueLoadedProperties[] = $name;
+
+        return $this;
+    }
+
+    public function getDefaultValueLoadedProperties(): array
+    {
+        return $this->defaultValueLoadedProperties;
+    }
+
+    public function resetDefaultValueLoadedProperties(): self
+    {
+        $this->defaultValueLoadedProperties = [];
+
+        return $this;
+    }
+
     public function clearCachedLockedProperties(): self
     {
         unset($this->locked);
 
         return $this;
+    }
+
+    public function markLoadedFromCache(bool $loadedFromCache): self
+    {
+        $this->loadedFromCache = $loadedFromCache;
+
+        return $this;
+    }
+
+    public function isLoadedFromCache(): bool
+    {
+        return $this->loadedFromCache;
     }
 }

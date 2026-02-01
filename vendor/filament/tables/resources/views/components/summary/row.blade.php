@@ -44,7 +44,7 @@
         <x-filament-tables::cell
             class="text-sm font-medium text-gray-950 dark:text-white"
         >
-            <span class="px-3 py-4">
+            <span class="fi-ta-summary-row-heading px-3 py-4">
                 {{ $heading }}
             </span>
         </x-filament-tables::cell>
@@ -57,7 +57,7 @@
                     continue;
                 }
 
-                if ($column->hasSummary()) {
+                if ($column->hasSummary($query)) {
                     break;
                 }
 
@@ -67,7 +67,7 @@
     @endif
 
     @foreach ($columns as $column)
-        @if (($loop->first || $extraHeadingColumn || $groupsOnly || ($loop->iteration > $headingColumnSpan)) && ($placeholderColumns || $column->hasSummary()))
+        @if (($loop->first || $extraHeadingColumn || $groupsOnly || ($loop->iteration > $headingColumnSpan)) && ($placeholderColumns || $column->hasSummary($query)))
             @php
                 $alignment = $column->getAlignment() ?? Alignment::Start;
 
@@ -92,12 +92,12 @@
             >
                 @if ($loop->first && (! $extraHeadingColumn) && (! $groupsOnly))
                     <span
-                        class="flex px-3 py-4 text-sm font-medium text-gray-950 dark:text-white"
+                        class="fi-ta-summary-row-heading flex px-3 py-4 text-sm font-medium text-gray-950 dark:text-white"
                     >
                         {{ $heading }}
                     </span>
-                @elseif ((! $placeholderColumns) || $column->hasSummary())
-                    @foreach ($column->getSummarizers() as $summarizer)
+                @elseif ((! $placeholderColumns) || $column->hasSummary($query))
+                    @foreach ($column->getSummarizers($query) as $summarizer)
                         {{ $summarizer->query($query)->selectedState($selectedState) }}
                     @endforeach
                 @endif

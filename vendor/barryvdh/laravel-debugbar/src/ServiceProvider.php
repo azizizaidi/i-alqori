@@ -1,94 +1,42 @@
 <?php
 
-namespace Barryvdh\Debugbar;
+declare(strict_types=1);
 
-use Barryvdh\Debugbar\Middleware\DebugbarEnabled;
-use Barryvdh\Debugbar\Middleware\InjectDebugbar;
+namespace Fruitcake\LaravelDebugbar;
+
 use DebugBar\DataFormatter\DataFormatter;
 use DebugBar\DataFormatter\DataFormatterInterface;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Routing\Router;
-use Illuminate\Session\SessionManager;
+use Fruitcake\LaravelDebugbar\Console\ClearCommand;
+use Fruitcake\LaravelDebugbar\Support\Octane\ResetDebugbar;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Foundation\Events\Terminating;
+use Illuminate\Foundation\Http\Events\RequestHandled;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Collection;
-use Barryvdh\Debugbar\Facade as DebugBar;
+use Laravel\Octane\Events\RequestReceived;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     /**
      * Register the service provider.
      *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $configPath = __DIR__ . '/../config/debugbar.php';
         $this->mergeConfigFrom($configPath, 'debugbar');
 
         $this->app->alias(
             DataFormatter::class,
-            DataFormatterInterface::class
+            DataFormatterInterface::class,
         );
 
-        $this->app->singleton(LaravelDebugbar::class, function ($app) {
-            $debugbar = new LaravelDebugbar($app);
-
-            if ($app->bound(SessionManager::class)) {
-                $sessionManager = $app->make(SessionManager::class);
-                $httpDriver = new SymfonyHttpDriver($sessionManager);
-                $debugbar->setHttpDriver($httpDriver);
-            }
-
-            return $debugbar;
-        });
-
+        $this->app->singleton(LaravelDebugbar::class);
         $this->app->alias(LaravelDebugbar::class, 'debugbar');
 
-        $this->app->singleton(
-            'command.debugbar.clear',
-            function ($app) {
-                return new Console\ClearCommand($app['debugbar']);
-            }
-        );
-
-        $this->app->extend(
-            'view',
-            function (Factory $factory, Container $application): Factory {
-                $laravelDebugbar = $application->make(LaravelDebugbar::class);
-
-                $shouldTrackViewTime = $laravelDebugbar->isEnabled() &&
-                    $laravelDebugbar->shouldCollect('time', true) &&
-                    $laravelDebugbar->shouldCollect('views', true) &&
-                    $application['config']->get('debugbar.options.views.timeline', false);
-
-                if (! $shouldTrackViewTime) {
-                    /* Do not swap the engine to save performance */
-                    return $factory;
-                }
-
-                $extensions = array_reverse($factory->getExtensions());
-                $engines = array_flip($extensions);
-                $enginesResolver = $application->make('view.engine.resolver');
-
-                foreach ($engines as $engine => $extension) {
-                    $resolved = $enginesResolver->resolve($engine);
-
-                    $factory->addExtension($extension, $engine, function () use ($resolved, $laravelDebugbar) {
-                        return new DebugbarViewEngine($resolved, $laravelDebugbar);
-                    });
-                }
-
-                // returns original order of extensions
-                foreach ($extensions as $extension => $engine) {
-                    $factory->addExtension($extension, $engine);
-                }
-
-                return $factory;
-            }
-        );
-
-        Collection::macro('debug', function () {
+        Collection::macro('debug', function (): \Illuminate\Support\Collection {
             debug($this);
             return $this;
         });
@@ -97,58 +45,78 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     /**
      * Bootstrap the application events.
      *
-     * @return void
      */
-    public function boot()
+    public function boot(Dispatcher $events): void
     {
-        $configPath = __DIR__ . '/../config/debugbar.php';
-        $this->publishes([$configPath => $this->getConfigPath()], 'config');
+        if ($this->app->runningInConsole()) {
+            $configPath = __DIR__ . '/../config/debugbar.php';
+            $this->publishes([$configPath => $this->getConfigPath()], 'config');
 
-        $this->loadRoutesFrom(realpath(__DIR__ . '/debugbar-routes.php'));
+            $this->commands([ClearCommand::class]);
+        }
 
-        $this->registerMiddleware(InjectDebugbar::class);
+        $this->loadRoutesFrom(__DIR__ . '/debugbar-routes.php');
 
-        $this->commands(['command.debugbar.clear']);
-    }
+        // Resolve the LaravelDebugbar instance during boot to force it to be loaded in the Octane sandbox
+        try {
+            $debugbar = $this->app->make(LaravelDebugbar::class);
+        } catch (\Throwable $e) {
+            // Errors can occur when removing LaravelDebugbar with composer scripts, when php-debugbar is not installed
+            report($e);
+            return;
+        }
 
-    /**
-     * Get the active router.
-     *
-     * @return Router
-     */
-    protected function getRouter()
-    {
-        return $this->app['router'];
+        // Reset the debugbar instance on each new Octane request
+        $events->listen(RequestReceived::class, ResetDebugbar::class);
+
+        // Handle response
+        $events->listen(RequestHandled::class, function ($event) use ($debugbar): void {
+            $debugbar->handleResponse($event->request, $event->response);
+        });
+
+        // Store any data collected during termination but not already stored
+        $events->listen(Terminating::class, function ($event) use ($debugbar): void {
+            $debugbar->terminate();
+        });
+
+        if (config('debugbar.collect_jobs')) {
+            $events->listen(JobProcessing::class, function (JobProcessing $event) use ($debugbar): void {
+                // Sync jobs in non-console jobs are just requests
+                if ($event->connectionName === 'sync' && !$this->app->runningInConsole()) {
+                    return;
+                }
+
+                $debugbar->enable();
+                $debugbar->setProcessingJob($event->job);
+            });
+
+            $events->listen(JobProcessed::class, function (JobProcessed $event) use ($debugbar): void {
+                if ($debugbar->getProcessingJob()) {
+                    $debugbar->collect();
+                    $debugbar->setProcessingJob(null);
+                    $debugbar->reset();
+                }
+            });
+        }
+
+        // Exclude debugbar cookies from encryption
+        EncryptCookies::except($debugbar->getStackDataSessionNamespace());
+
+        // Attach listeners when debugbar should be enabled
+        if ($debugbar->isEnabled() && !$debugbar->requestIsExcluded($this->app['request'])) {
+            $debugbar->boot();
+        }
+
+        // Register boot time, regardless of already being booted
+        $this->booted(fn() => $debugbar->booted());
     }
 
     /**
      * Get the config path
      *
-     * @return string
      */
-    protected function getConfigPath()
+    protected function getConfigPath(): string
     {
         return config_path('debugbar.php');
-    }
-
-    /**
-     * Publish the config file
-     *
-     * @param  string $configPath
-     */
-    protected function publishConfig($configPath)
-    {
-        $this->publishes([$configPath => config_path('debugbar.php')], 'config');
-    }
-
-    /**
-     * Register the Debugbar Middleware
-     *
-     * @param  string $middleware
-     */
-    protected function registerMiddleware($middleware)
-    {
-        $kernel = $this->app[Kernel::class];
-        $kernel->pushMiddleware($middleware);
     }
 }

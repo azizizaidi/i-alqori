@@ -3,12 +3,13 @@
 namespace Spatie\MediaLibrary\MediaCollections;
 
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Arr;
 use Spatie\MediaLibrary\Conversions\ConversionCollection;
 use Spatie\MediaLibrary\Conversions\ImageGenerators\Image;
 use Spatie\MediaLibrary\Conversions\ImageGenerators\ImageGeneratorFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class HtmlableMedia implements Htmlable, \Stringable
+class HtmlableMedia implements \Stringable, Htmlable
 {
     protected string $conversionName = '';
 
@@ -18,16 +19,29 @@ class HtmlableMedia implements Htmlable, \Stringable
 
     public function __construct(
         protected Media $media
-    ) {
-    }
+    ) {}
 
+    /**
+     * @return $this
+     */
     public function attributes(array $attributes): self
     {
+        if (is_array($attributes['class'] ?? null)) {
+            $attributes['class'] = Arr::toCssClasses($attributes['class']);
+        }
+
+        if (is_array($attributes['style'] ?? null)) {
+            $attributes['style'] = Arr::toCssStyles($attributes['style']);
+        }
+
         $this->extraAttributes = $attributes;
 
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function conversion(string $conversionName): self
     {
         $this->conversionName = $conversionName;
@@ -35,6 +49,9 @@ class HtmlableMedia implements Htmlable, \Stringable
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function lazy(): self
     {
         $this->loadingAttributeValue = ('lazy');
@@ -42,9 +59,9 @@ class HtmlableMedia implements Htmlable, \Stringable
         return $this;
     }
 
-    public function toHtml()
+    public function toHtml(): string
     {
-        $imageGenerator = ImageGeneratorFactory::forMedia($this->media) ?? new Image();
+        $imageGenerator = ImageGeneratorFactory::forMedia($this->media) ?? new Image;
 
         if (! $imageGenerator->canHandleMime($this->media->mime_type)) {
             return '';

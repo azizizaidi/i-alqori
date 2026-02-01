@@ -43,7 +43,7 @@
     	@if (count($checkResults?->storedCheckResults ?? []))
     		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-5">
     			@foreach ($checkResults->storedCheckResults as $result)
-    				<div class="flex items-start px-4 space-x-2 overflow-hidden py-5 text-opacity-0 transition transform bg-white shadow-sm shadow-gray-200 dark:shadow-black/25 dark:shadow-md dark:bg-gray-900 rounded-xl sm:p-6 md:space-x-3 md:min-h-[130px] dark:border-t dark:border-gray-700">
+    				<div class="flex items-start px-4 space-x-2 overflow-hidden py-5 text-opacity-0 transition transform bg-white shadow-sm shadow-gray-200 dark:shadow-black/25 dark:shadow-md dark:bg-gray-800 rounded-xl sm:p-6 md:space-x-3 md:min-h-[130px] dark:border-t dark:border-gray-700">
     					<div class="flex justify-center items-center rounded-full p-2 {{ backgroundColor($result->status) }}">
     						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 {{ iconColor($result->status) }}" viewBox="0 0 20 20" fill="currentColor">
     							@if(icon($result->status) == 'check-circle')
@@ -79,7 +79,7 @@
 
     	@if ($lastRanAt)
             <div class="{{ $lastRanAt->diffInMinutes() > 5 ? 'text-red-500' : 'text-gray-400 dark:text-gray-200' }} text-md text-center font-medium">
-                {{ __('filament-spatie-health::health.pages.health_check_results.notifications.check_results') }} {{ $lastRanAt->diffForHumans() }}
+                {{ __('filament-spatie-health::health.pages.health_check_results.notifications.check_results', ['lastRanAt' => $lastRanAt->diffForHumans()]) }}
             </div>
         @endif
     </div>

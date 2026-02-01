@@ -6,6 +6,104 @@ All notable changes to `laravel-settings` will be documented in this file
 
 - Make `spatie/data-transfer-object` dependency optional. (#160)
 
+## 3.5.1 - 2025-12-03
+
+### What's Changed
+
+* fix issue 343  Fixed: When multiple tenants have the same cache key, tenants cannot be distinguished by @Wsmallnews in https://github.com/spatie/laravel-settings/pull/344
+* Revert "Update migration file publishing with timestamp" by @rubenvanassche in https://github.com/spatie/laravel-settings/pull/349
+
+**Full Changelog**: https://github.com/spatie/laravel-settings/compare/3.5.0...3.5.1
+
+## 3.5.0 - 2025-10-24
+
+### What's Changed
+
+* Register the auto discover cache and clear commands as optimize commands by @willrowe in https://github.com/spatie/laravel-settings/pull/327
+* Update migration file publishing with timestamp by @samuelterra22 in https://github.com/spatie/laravel-settings/pull/341
+* [Feature] Added ArrayDataCast to cast arrays of Laravel Data by @serious-angel in https://github.com/spatie/laravel-settings/pull/334
+
+**Full Changelog**: https://github.com/spatie/laravel-settings/compare/3.4.4...3.5.0
+
+## 3.4.4 - 2025-04-11
+
+- Fix #319
+
+**Full Changelog**: https://github.com/spatie/laravel-settings/compare/3.4.3...3.4.4
+
+## 3.4.3 - 2025-04-11
+
+### What's Changed
+
+* Do not save settings with missing migrations by @gazben in https://github.com/spatie/laravel-settings/pull/313
+
+**Full Changelog**: https://github.com/spatie/laravel-settings/compare/3.4.2...3.4.3
+
+## 3.4.2 - 2025-02-14
+
+### What's Changed
+
+* Fill missing settings with default values by @gazben in https://github.com/spatie/laravel-settings/pull/298
+
+### New Contributors
+
+* @gazben made their first contribution in https://github.com/spatie/laravel-settings/pull/298
+
+**Full Changelog**: https://github.com/spatie/laravel-settings/compare/3.4.1...3.4.2
+
+## 3.4.1 - 2025-01-31
+
+### What's Changed
+
+* chore(deps): bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot in https://github.com/spatie/laravel-settings/pull/309
+* Change out of date stubs in README by @GrandadEvans in https://github.com/spatie/laravel-settings/pull/310
+* Support Illuminate\Support\Carbon as cast by @Propaganistas in https://github.com/spatie/laravel-settings/pull/311
+* chore: fix typo by @danjohnson95 in https://github.com/spatie/laravel-settings/pull/306
+
+### New Contributors
+
+* @GrandadEvans made their first contribution in https://github.com/spatie/laravel-settings/pull/310
+* @Propaganistas made their first contribution in https://github.com/spatie/laravel-settings/pull/311
+* @danjohnson95 made their first contribution in https://github.com/spatie/laravel-settings/pull/306
+
+**Full Changelog**: https://github.com/spatie/laravel-settings/compare/3.4.0...3.4.1
+
+## 3.4.0 - 2024-09-20
+
+### What's Changed
+
+* Update README.md by @marventhieme in https://github.com/spatie/laravel-settings/pull/290
+* Update README.md by @marventhieme in https://github.com/spatie/laravel-settings/pull/291
+* Feat: add exists in migrator by @akshit-arora in https://github.com/spatie/laravel-settings/pull/289
+
+### New Contributors
+
+* @marventhieme made their first contribution in https://github.com/spatie/laravel-settings/pull/290
+* @akshit-arora made their first contribution in https://github.com/spatie/laravel-settings/pull/289
+
+**Full Changelog**: https://github.com/spatie/laravel-settings/compare/3.3.3...3.4.0
+
+## 3.3.3 - 2024-08-13
+
+### What's Changed
+
+* Handle Parentheses On Anonymous Settings Migrations by @Magnesium38 in https://github.com/spatie/laravel-settings/pull/280
+
+### New Contributors
+
+* @Magnesium38 made their first contribution in https://github.com/spatie/laravel-settings/pull/280
+
+**Full Changelog**: https://github.com/spatie/laravel-settings/compare/3.3.2...3.3.3
+
+## 3.3.2 - 2024-03-22
+
+### What's Changed
+
+* [3.x] Fix PHP 7.4 Compatibilty by @Rizky92 in https://github.com/spatie/laravel-settings/pull/264
+* Update MakeSettingCommand.php by @hamzaelmaghari in https://github.com/spatie/laravel-settings/pull/262
+
+**Full Changelog**: https://github.com/spatie/laravel-settings/compare/3.3.1...3.3.2
+
 ## 3.3.1 - 2024-03-13
 
 ### What's Changed

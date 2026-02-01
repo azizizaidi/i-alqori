@@ -1,5 +1,5 @@
 # Serialization for Eloquent's QueryBuilder
-Supports: Laravel 6 - Laravel 11
+Supports: Laravel 6 - Laravel 12
 
 ## Installation
 
@@ -19,7 +19,6 @@ $package = \EloquentSerialize::serialize(
         ->limit(20)
 );
 ```
-
 
 ### Unserialize
 ```php

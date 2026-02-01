@@ -15,7 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use League\Csv\ByteSequence;
+use League\Csv\Bom;
 use League\Csv\Writer;
 use SplTempFileObject;
 
@@ -53,7 +53,7 @@ class PrepareCsvExport implements ShouldQueue
     public function handle(): void
     {
         $csv = Writer::createFromFileObject(new SplTempFileObject);
-        $csv->setOutputBOM(ByteSequence::BOM_UTF8);
+        $csv->setOutputBOM(Bom::Utf8);
         $csv->setDelimiter($this->exporter::getCsvDelimiter());
         $csv->insertOne(array_values($this->columnMap));
 
@@ -66,16 +66,61 @@ class PrepareCsvExport implements ShouldQueue
 
         /** @var Connection $databaseConnection */
         $databaseConnection = $query->getConnection();
+        $databaseGrammar = $query->getGrammar();
 
         if ($databaseConnection->getDriverName() === 'pgsql') {
             $originalOrders = collect($query->getQuery()->orders)
-                ->reject(fn (array $order): bool => in_array($order['column'] ?? null, [$keyName, $qualifiedKeyName]))
-                ->unique('column');
+                ->reject(function (array $order) use ($qualifiedKeyName): bool {
+                    if (($order['type'] ?? null) === 'Raw') {
+                        return false;
+                    }
 
-            $query->reorder($qualifiedKeyName);
+                    return ($order['column'] ?? null) === $qualifiedKeyName;
+                })
+                ->unique(function (array $order) use ($databaseGrammar): string {
+                    if (($order['type'] ?? null) === 'Raw') {
+                        return 'raw:' . ($order['sql'] ?? '');
+                    }
+
+                    if ($databaseGrammar->isExpression($order['column'] ?? null)) {
+                        return 'expression:' . $order['column']->getValue($databaseGrammar);
+                    }
+
+                    return 'column:' . ($order['column'] ?? '');
+                });
+
+            /** @var array<string, mixed> $originalBindings */
+            $originalBindings = $query->getRawBindings();
+
+            if (! empty($originalOrders->all())) {
+                $firstOrder = $originalOrders->first();
+
+                if (($firstOrder['type'] ?? null) === 'Raw') {
+                    $query->reorder();
+                    $query->orderByRaw($firstOrder['sql']);
+                } else {
+                    $query->reorder($firstOrder['column'], $firstOrder['direction']);
+                }
+
+                $originalOrders->forget(0);
+            } else {
+                $query->reorder($qualifiedKeyName);
+            }
 
             foreach ($originalOrders as $order) {
-                $query->orderBy($order['column'], $order['direction']);
+                if (($order['type'] ?? null) === 'Raw') {
+                    $query->orderByRaw($order['sql']);
+                } elseif (filled($order['column'] ?? null) && filled($order['direction'] ?? null)) {
+                    $query->orderBy($order['column'], $order['direction']);
+                }
+            }
+
+            $newBindings = $query->getRawBindings();
+
+            foreach ($originalBindings as $key => $value) {
+                if ($binding = array_diff($value, $newBindings[$key])) {
+                    $query->addBinding($binding, $key);
+                }
             }
         }
 
@@ -129,7 +174,10 @@ class PrepareCsvExport implements ShouldQueue
         $chunkKeySize = $this->chunkSize * 10;
 
         $baseQuery = $query->toBase();
-        $baseQuery->distinct($qualifiedKeyName);
+
+        if (in_array($query->getQuery()->orders[0]['column'] ?? null, [$keyName, $qualifiedKeyName])) {
+            $baseQuery->distinct($qualifiedKeyName);
+        }
 
         /** @phpstan-ignore-next-line */
         $baseQueryOrders = $baseQuery->orders ?? [];
@@ -159,7 +207,8 @@ class PrepareCsvExport implements ShouldQueue
                 fn (Collection $records) => $dispatchRecords(
                     Arr::pluck($records->all(), $keyName),
                 ),
-                column: $keyName,
+                column: $qualifiedKeyName,
+                alias: $keyName,
                 descending: ($baseQueryOrders[0]['direction'] ?? 'asc') === 'desc',
             );
     }

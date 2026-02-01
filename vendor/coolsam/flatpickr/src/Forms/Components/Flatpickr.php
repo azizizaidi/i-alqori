@@ -4,6 +4,7 @@ namespace Coolsam\FilamentFlatpickr\Forms\Components;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Closure;
 use Coolsam\FilamentFlatpickr\Enums\FlatpickrMode;
 use Coolsam\FilamentFlatpickr\Enums\FlatpickrMonthSelectorType;
 use Coolsam\FilamentFlatpickr\Enums\FlatpickrPosition;
@@ -12,7 +13,6 @@ use Filament\Forms\Components\Concerns;
 use Filament\Forms\Components\Contracts;
 use Filament\Forms\Components\Field;
 use Filament\Support\Concerns\HasExtraAlpineAttributes;
-use Closure;
 
 class Flatpickr extends Field implements Contracts\CanBeLengthConstrained, Contracts\HasAffixActions
 {
@@ -245,8 +245,8 @@ class Flatpickr extends Field implements Contracts\CanBeLengthConstrained, Contr
             '
         );
         $this->theme(config('coolsam-flatpickr.default_theme', FlatpickrTheme::DEFAULT));
-        
-        if(! $this->dehydrateStateUsing){
+
+        if (! $this->dehydrateStateUsing) {
             $this->dehydrateStateUsing(static function (Flatpickr $component, $state) {
                 return self::dehydratePickerState($component, $state);
             });
@@ -499,7 +499,7 @@ class Flatpickr extends Field implements Contracts\CanBeLengthConstrained, Contr
         return $this->minDate;
     }
 
-    public function minDate(Carbon|string|null $minDate|Closure): static
+    public function minDate(Carbon|string|null|Closure $minDate): static
     {
         $this->minDate = $minDate ? Carbon::parse($minDate) : $minDate;
 
@@ -803,7 +803,7 @@ class Flatpickr extends Field implements Contracts\CanBeLengthConstrained, Contr
 
     public function getTheme(): string
     {
-        return $this->theme?->value;
+        return $this->theme->value;
     }
 
     public function getThemeAsset(): string

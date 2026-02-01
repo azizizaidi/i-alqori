@@ -2,6 +2,4 @@
 
 namespace Hasnayeen\Themes\Contracts;
 
-interface HasOnlyLightMode
-{
-}
+interface HasOnlyLightMode {}

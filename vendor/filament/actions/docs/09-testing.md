@@ -62,7 +62,7 @@ it('can send invoices', function () {
         'invoice' => $invoice,
     ])
         ->mountAction('send')
-        ->setActionData('send', data: [
+        ->setActionData([
             'email' => $email = fake()->email(),
         ])
 });
@@ -83,6 +83,25 @@ it('stops sending if invoice has no email address', function () {
     ])
         ->callAction('send')
         ->assertActionHalted('send');
+});
+```
+
+## Modal content
+
+To assert the content of a modal, you should first mount the action (rather than call it which closes the modal). You can then use [Livewire assertions](https://livewire.laravel.com/docs/testing#assertions) such as `assertSee()` to assert the modal contains the content that you expect it to:
+
+```php
+use function Pest\Livewire\livewire;
+
+it('confirms the target address before sending', function () {
+    $invoice = Invoice::factory()->create();
+    $recipientEmail = $invoice->company->primaryContact->email;
+
+    livewire(EditInvoice::class, [
+        'invoice' => $invoice,
+    ])
+        ->mountAction('send')
+        ->assertSee($recipientEmail);
 });
 ```
 
@@ -126,7 +145,7 @@ it('can send invoices to the primary contact by default', function () {
         ])
         ->callMountedAction()
         ->assertHasNoActionErrors();
-        
+
     expect($invoice->refresh())
         ->isSent()->toBeTrue()
         ->recipient_email->toBe($recipientEmail);

@@ -11,7 +11,6 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 use InvalidArgumentException;
 use JsonSerializable;
@@ -246,7 +245,7 @@ class Money implements Arrayable, Castable, Jsonable, JsonSerializable, Renderab
 
     protected function parseAmountFromCallable(mixed $amount): mixed
     {
-        if (!is_callable($amount)) {
+        if (! is_callable($amount)) {
             return $amount;
         }
 
@@ -255,7 +254,7 @@ class Money implements Arrayable, Castable, Jsonable, JsonSerializable, Renderab
 
     protected function parseAmountFromString(mixed $amount): mixed
     {
-        if (!is_string($amount)) {
+        if (! is_string($amount)) {
             return $amount;
         }
 
@@ -263,7 +262,7 @@ class Money implements Arrayable, Castable, Jsonable, JsonSerializable, Renderab
         $decimalMark = $this->currency->getDecimalMark();
 
         $amount = str_replace($this->currency->getSymbol(), '', $amount);
-        $amount = preg_replace('/[^\d\\' . $thousandsSeparator . '\\' . $decimalMark . '\-\+]/', '', $amount);
+        $amount = (string) preg_replace('/[^\d\\' . $thousandsSeparator . '\\' . $decimalMark . '\-\+]/', '', $amount);
         $amount = str_replace($this->currency->getThousandsSeparator(), '', $amount);
         $amount = str_replace($this->currency->getDecimalMark(), '.', $amount);
 
@@ -278,7 +277,7 @@ class Money implements Arrayable, Castable, Jsonable, JsonSerializable, Renderab
 
     protected function convertAmount(int|float $amount, bool $convert = false): int|float
     {
-        if (!$convert) {
+        if (! $convert) {
             return $amount;
         }
 
@@ -330,7 +329,7 @@ class Money implements Arrayable, Castable, Jsonable, JsonSerializable, Renderab
      */
     protected function assertSameCurrency(Money $other): void
     {
-        if (!$this->isSameCurrency($other)) {
+        if (! $this->isSameCurrency($other)) {
             throw new InvalidArgumentException('Different currencies "' . $this->currency . '" and "' . $other->currency . '"');
         }
     }
@@ -658,7 +657,7 @@ class Money implements Arrayable, Castable, Jsonable, JsonSerializable, Renderab
 
     public function toJson($options = 0): string
     {
-        return json_encode($this->toArray(), $options);
+        return (string) json_encode($this->toArray(), $options);
     }
 
     public function jsonSerialize(): mixed

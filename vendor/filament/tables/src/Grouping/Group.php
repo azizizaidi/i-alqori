@@ -9,6 +9,7 @@ use Closure;
 use Filament\Support\Components\Component;
 use Filament\Support\Contracts\HasLabel as LabelInterface;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -17,6 +18,8 @@ use Illuminate\Support\Arr;
 
 class Group extends Component
 {
+    use Concerns\BelongsToTable;
+
     protected ?string $column;
 
     protected ?Closure $getDescriptionFromRecordUsing = null;
@@ -33,7 +36,7 @@ class Group extends Component
 
     protected ?Closure $scopeQueryByKeyUsing = null;
 
-    protected ?string $label;
+    protected string | Htmlable | Closure | null $label = null;
 
     protected string $id;
 
@@ -42,6 +45,8 @@ class Group extends Component
     protected bool $isTitlePrefixedWithLabel = true;
 
     protected bool $isDate = false;
+
+    protected string $evaluationIdentifier = 'group';
 
     final public function __construct(?string $id = null)
     {
@@ -84,7 +89,7 @@ class Group extends Component
         return $this;
     }
 
-    public function label(?string $label): static
+    public function label(string | Htmlable | Closure | null $label): static
     {
         $this->label = $label;
 
@@ -177,9 +182,9 @@ class Group extends Component
         return $this->id;
     }
 
-    public function getLabel(): string
+    public function getLabel(): string | Htmlable
     {
-        return $this->label ?? (string) str($this->getId())
+        return $this->evaluate($this->label) ?? (string) str($this->getId())
             ->beforeLast('.')
             ->afterLast('.')
             ->kebab()
@@ -187,7 +192,7 @@ class Group extends Component
             ->ucfirst();
     }
 
-    public function getDescription(Model $record, ?string $title): ?string
+    public function getDescription(Model $record, string | Htmlable | null $title): string | Htmlable | null
     {
         if (! $this->getDescriptionFromRecordUsing) {
             return null;
@@ -246,7 +251,7 @@ class Group extends Component
         return Arr::get($record, $this->getColumn());
     }
 
-    public function getTitle(Model $record): ?string
+    public function getTitle(Model $record): string | Htmlable | null
     {
         $column = $this->getColumn();
 
@@ -468,5 +473,17 @@ class Group extends Component
         }
 
         return $query->with([$relationshipName]);
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    protected function resolveDefaultClosureDependencyForEvaluationByName(string $parameterName): array
+    {
+        return match ($parameterName) {
+            'livewire' => [$this->getLivewire()],
+            'table' => [$this->getTable()],
+            default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),
+        };
     }
 }

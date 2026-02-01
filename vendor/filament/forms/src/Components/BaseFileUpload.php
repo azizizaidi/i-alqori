@@ -32,6 +32,8 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
 
     protected bool | Closure $isOpenable = false;
 
+    protected bool | Closure $isPasteable = true;
+
     protected bool | Closure $isPreviewable = true;
 
     protected bool | Closure $isReorderable = false;
@@ -45,6 +47,8 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     protected int | Closure | null $maxSize = null;
 
     protected int | Closure | null $minSize = null;
+
+    protected int | Closure | null $maxParallelUploads = null;
 
     protected int | Closure | null $maxFiles = null;
 
@@ -282,6 +286,13 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
         return $this;
     }
 
+    public function pasteable(bool | Closure $condition = true): static
+    {
+        $this->isPasteable = $condition;
+
+        return $this;
+    }
+
     public function previewable(bool | Closure $condition = true): static
     {
         $this->isPreviewable = $condition;
@@ -393,6 +404,13 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
         return $this;
     }
 
+    public function maxParallelUploads(int | Closure | null $count): static
+    {
+        $this->maxParallelUploads = $count;
+
+        return $this;
+    }
+
     public function maxFiles(int | Closure | null $count): static
     {
         $this->maxFiles = $count;
@@ -481,6 +499,11 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
         return (bool) $this->evaluate($this->isOpenable);
     }
 
+    public function isPasteable(): bool
+    {
+        return (bool) $this->evaluate($this->isPasteable);
+    }
+
     public function isPreviewable(): bool
     {
         return (bool) $this->evaluate($this->isPreviewable);
@@ -538,6 +561,11 @@ class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValida
     public function getMinSize(): ?int
     {
         return $this->evaluate($this->minSize);
+    }
+
+    public function getMaxParallelUploads(): ?int
+    {
+        return $this->evaluate($this->maxParallelUploads);
     }
 
     public function getVisibility(): string

@@ -12,7 +12,7 @@ A new `currency(string | Closure $currency = null, bool $shouldConvert = false)`
 
 ### Summary (Table Builder)
 
-The summarizer classes `Sum` and `Average` contains the method `currency(string | Closure $currency = null, bool $shouldConvert = false)` to display the value in the configured currency format.
+The summarizer classes `Summarizer`, `Sum` and `Average` contains the method `currency(string | Closure $currency = null, bool $shouldConvert = false)` to display the value in the configured currency format.
 
 ### Text Entry (InfoLists)
 
@@ -21,6 +21,10 @@ A new `currency(string | Closure $currency = null, bool $shouldConvert = false)`
 ### Text Input (Form Builder)
 
 We also have a `currencyMask()` method for `TextInput` that lets you mask your numbers in front-end and return the plain number to back-end.
+
+### Text Input Column (Table Builder)
+
+We also have a `currencyMask()` method for `TextInputColumn` that lets you mask your numbers in front-end and return the plain number to back-end.
 
 By using this package you can configure the formatter using [laravel-money config](https://github.com/akaunting/laravel-money/blob/master/config/money.php).
 

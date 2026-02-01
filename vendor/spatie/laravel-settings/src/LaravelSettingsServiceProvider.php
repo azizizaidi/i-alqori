@@ -39,6 +39,12 @@ class LaravelSettingsServiceProvider extends ServiceProvider
                 ClearDiscoveredSettingsCacheCommand::class,
                 ClearCachedSettingsCommand::class,
             ]);
+
+            $this->optimizes(
+                optimize: CacheDiscoveredSettingsCommand::class,
+                clear: ClearDiscoveredSettingsCacheCommand::class,
+                key: 'laravel-settings',
+            );
         }
 
         Event::subscribe(SettingsEventSubscriber::class);
@@ -78,6 +84,8 @@ class LaravelSettingsServiceProvider extends ServiceProvider
                 if (
                     str_contains($contents, 'return new class extends '.SettingsMigration::class)
                     || str_contains($contents, 'return new class extends SettingsMigration')
+                    || str_contains($contents, 'return new class() extends '.SettingsMigration::class)
+                    || str_contains($contents, 'return new class() extends SettingsMigration')
                 ) {
                     return $file->getBasename('.php');
                 }

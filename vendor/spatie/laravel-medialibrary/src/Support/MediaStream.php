@@ -6,14 +6,15 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Support\Collection;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use ZipStream\Option\Archive as ArchiveOptions;
 use ZipStream\ZipStream;
 
 class MediaStream implements Responsable
 {
     protected Collection $mediaItems;
 
-    protected array|ArchiveOptions $zipOptions;
+    private array $nameCounters = [];
+
+    protected array $zipOptions;
 
     public static function create(string $zipName): self
     {
@@ -24,9 +25,12 @@ class MediaStream implements Responsable
     {
         $this->mediaItems = collect();
 
-        $this->zipOptions = class_exists(ArchiveOptions::class) ? new ArchiveOptions() : [];
+        $this->zipOptions = [];
     }
 
+    /**
+     * @return $this
+     */
     public function useZipOptions(callable $zipOptionsCallable): self
     {
         $zipOptionsCallable($this->zipOptions);
@@ -34,6 +38,9 @@ class MediaStream implements Responsable
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function addMedia(...$mediaItems): self
     {
         collect($mediaItems)
@@ -72,14 +79,10 @@ class MediaStream implements Responsable
         return new StreamedResponse(fn () => $this->getZipStream(), 200, $headers);
     }
 
-    public function getZipStream(): ZipStream
+    public function getZipStream(bool $finish = true): ZipStream
     {
-        if (class_exists(ArchiveOptions::class)) {
-            $zip = new ZipStream($this->zipName, $this->zipOptions);
-        } else {
-            $this->zipOptions['outputName'] = $this->zipName;
-            $zip = new ZipStream(...$this->zipOptions);
-        }
+        $this->zipOptions['outputName'] = $this->zipName;
+        $zip = new ZipStream(...$this->zipOptions);
 
         $this->getZipStreamContents()->each(function (array $mediaInZip) use ($zip) {
             $stream = $mediaInZip['media']->stream();
@@ -91,13 +94,16 @@ class MediaStream implements Responsable
             }
         });
 
-        $zip->finish();
+        if ($finish) {
+            $zip->finish();
+        }
 
         return $zip;
     }
 
     protected function getZipStreamContents(): Collection
     {
+
         return $this->mediaItems->map(fn (Media $media, $mediaItemIndex) => [
             'fileNameInZip' => $this->getZipFileNamePrefix($this->mediaItems, $mediaItemIndex).$this->getFileNameWithSuffix($this->mediaItems, $mediaItemIndex),
             'media' => $media,
@@ -106,28 +112,22 @@ class MediaStream implements Responsable
 
     protected function getFileNameWithSuffix(Collection $mediaItems, int $currentIndex): string
     {
-        $fileNameCount = 0;
+        $fileName = $mediaItems[$currentIndex]->getDownloadFilename();
 
-        $fileName = $mediaItems[$currentIndex]->file_name;
+        $prefix = $this->getZipFileNamePrefix($mediaItems, $currentIndex);
+        $key = $prefix.$fileName;
 
-        foreach ($mediaItems as $index => $media) {
-            if ($index >= $currentIndex) {
-                break;
-            }
+        $count = ($this->nameCounters[$key] ?? 0);
+        $this->nameCounters[$key] = $count + 1;
 
-            if ($this->getZipFileNamePrefix($mediaItems, $index).$media->file_name === $this->getZipFileNamePrefix($mediaItems, $currentIndex).$fileName) {
-                $fileNameCount++;
-            }
-        }
-
-        if ($fileNameCount === 0) {
+        if ($count === 0) {
             return $fileName;
         }
 
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
         $fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
 
-        return "{$fileNameWithoutExtension} ({$fileNameCount}).{$extension}";
+        return "{$fileNameWithoutExtension} ({$count}).{$extension}";
     }
 
     protected function getZipFileNamePrefix(Collection $mediaItems, int $currentIndex): string
