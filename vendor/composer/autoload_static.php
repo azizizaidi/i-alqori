@@ -359,6 +359,11 @@ class ComposerStaticInit7fa3770ecb9aa5a49cb7d09a218b8e77
             'Brick\\Math\\' => 11,
             'BladeUI\\Icons\\' => 14,
             'BladeUI\\Heroicons\\' => 18,
+            'Bilfeldt\\RequestLogger\\Database\\Factories\\' => 42,
+            'Bilfeldt\\RequestLogger\\' => 23,
+            'Bilfeldt\\LaravelRouteStatistics\\Database\\Factories\\' => 51,
+            'Bilfeldt\\LaravelRouteStatistics\\' => 32,
+            'Bilfeldt\\CorrelationId\\' => 23,
             'Barryvdh\\DomPDF\\' => 16,
         ),
         'A' => 
@@ -370,6 +375,7 @@ class ComposerStaticInit7fa3770ecb9aa5a49cb7d09a218b8e77
             'Ariaieboy\\FilamentCurrency\\' => 27,
             'App\\' => 4,
             'AnourValar\\EloquentSerialize\\' => 29,
+            'Amendozaaguiar\\FilamentRouteStatistics\\' => 39,
             'Althinect\\FilamentSpatieRolesPermissions\\' => 41,
             'Akaunting\\Money\\' => 16,
         ),
@@ -1000,6 +1006,26 @@ class ComposerStaticInit7fa3770ecb9aa5a49cb7d09a218b8e77
         array (
             0 => __DIR__ . '/..' . '/blade-ui-kit/blade-heroicons/src',
         ),
+        'Bilfeldt\\RequestLogger\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/database/factories',
+        ),
+        'Bilfeldt\\RequestLogger\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src',
+        ),
+        'Bilfeldt\\LaravelRouteStatistics\\Database\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bilfeldt/laravel-route-statistics/database/factories',
+        ),
+        'Bilfeldt\\LaravelRouteStatistics\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bilfeldt/laravel-route-statistics/src',
+        ),
+        'Bilfeldt\\CorrelationId\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bilfeldt/laravel-correlation-id/src',
+        ),
         'Barryvdh\\DomPDF\\' => 
         array (
             0 => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src',
@@ -1032,6 +1058,10 @@ class ComposerStaticInit7fa3770ecb9aa5a49cb7d09a218b8e77
         'AnourValar\\EloquentSerialize\\' => 
         array (
             0 => __DIR__ . '/..' . '/anourvalar/eloquent-serialize/src',
+        ),
+        'Amendozaaguiar\\FilamentRouteStatistics\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/amendozaaguiar/filament-route-statistics/src',
         ),
         'Althinect\\FilamentSpatieRolesPermissions\\' => 
         array (
@@ -1083,6 +1113,10 @@ class ComposerStaticInit7fa3770ecb9aa5a49cb7d09a218b8e77
         'Althinect\\FilamentSpatieRolesPermissions\\Resources\\RoleResource\\Pages\\ViewRole' => __DIR__ . '/..' . '/althinect/filament-spatie-roles-permissions/src/Resources/RoleResource/Pages/ViewRole.php',
         'Althinect\\FilamentSpatieRolesPermissions\\Resources\\RoleResource\\RelationManager\\PermissionRelationManager' => __DIR__ . '/..' . '/althinect/filament-spatie-roles-permissions/src/Resources/RoleResource/RelationManager/PermissionRelationManager.php',
         'Althinect\\FilamentSpatieRolesPermissions\\Resources\\RoleResource\\RelationManager\\UserRelationManager' => __DIR__ . '/..' . '/althinect/filament-spatie-roles-permissions/src/Resources/RoleResource/RelationManager/UserRelationManager.php',
+        'Amendozaaguiar\\FilamentRouteStatistics\\FilamentRouteStatisticsPlugin' => __DIR__ . '/..' . '/amendozaaguiar/filament-route-statistics/src/FilamentRouteStatisticsPlugin.php',
+        'Amendozaaguiar\\FilamentRouteStatistics\\FilamentRouteStatisticsServiceProvider' => __DIR__ . '/..' . '/amendozaaguiar/filament-route-statistics/src/FilamentRouteStatisticsServiceProvider.php',
+        'Amendozaaguiar\\FilamentRouteStatistics\\Pages\\RouteStatistics' => __DIR__ . '/..' . '/amendozaaguiar/filament-route-statistics/src/Pages/RouteStatistics.php',
+        'Amendozaaguiar\\FilamentRouteStatistics\\Widgets\\RouteStatisticsOverview' => __DIR__ . '/..' . '/amendozaaguiar/filament-route-statistics/src/Widgets/RouteStatisticsOverview.php',
         'AnourValar\\EloquentSerialize\\Facades\\EloquentSerializeFacade' => __DIR__ . '/..' . '/anourvalar/eloquent-serialize/src/Facades/EloquentSerializeFacade.php',
         'AnourValar\\EloquentSerialize\\Grammars\\EloquentBuilderGrammar' => __DIR__ . '/..' . '/anourvalar/eloquent-serialize/src/Grammars/EloquentBuilderGrammar.php',
         'AnourValar\\EloquentSerialize\\Grammars\\ModelGrammar' => __DIR__ . '/..' . '/anourvalar/eloquent-serialize/src/Grammars/ModelGrammar.php',
@@ -1234,6 +1268,28 @@ class ComposerStaticInit7fa3770ecb9aa5a49cb7d09a218b8e77
         'Barryvdh\\DomPDF\\Facade\\Pdf' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade/Pdf.php',
         'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',
         'Barryvdh\\DomPDF\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',
+        'Bilfeldt\\CorrelationId\\CorrelationIdServiceProvider' => __DIR__ . '/..' . '/bilfeldt/laravel-correlation-id/src/CorrelationIdServiceProvider.php',
+        'Bilfeldt\\CorrelationId\\Jobs\\Middleware\\LogContext' => __DIR__ . '/..' . '/bilfeldt/laravel-correlation-id/src/Jobs/Middleware/LogContext.php',
+        'Bilfeldt\\CorrelationId\\Middleware\\ClientRequestIdMiddleware' => __DIR__ . '/..' . '/bilfeldt/laravel-correlation-id/src/Middleware/ClientRequestIdMiddleware.php',
+        'Bilfeldt\\CorrelationId\\Middleware\\CorrelationIdMiddleware' => __DIR__ . '/..' . '/bilfeldt/laravel-correlation-id/src/Middleware/CorrelationIdMiddleware.php',
+        'Bilfeldt\\CorrelationId\\Middleware\\LogContextMiddleware' => __DIR__ . '/..' . '/bilfeldt/laravel-correlation-id/src/Middleware/LogContextMiddleware.php',
+        'Bilfeldt\\LaravelRouteStatistics\\Commands\\LaravelRouteStatisticsCommand' => __DIR__ . '/..' . '/bilfeldt/laravel-route-statistics/src/Commands/LaravelRouteStatisticsCommand.php',
+        'Bilfeldt\\LaravelRouteStatistics\\Commands\\LaravelRouteUnusedCommand' => __DIR__ . '/..' . '/bilfeldt/laravel-route-statistics/src/Commands/LaravelRouteUnusedCommand.php',
+        'Bilfeldt\\LaravelRouteStatistics\\Database\\Factories\\RouteStatisticFactory' => __DIR__ . '/..' . '/bilfeldt/laravel-route-statistics/database/factories/RouteStatisticFactory.php',
+        'Bilfeldt\\LaravelRouteStatistics\\Http\\Middleware\\RouteStatisticsMiddleware' => __DIR__ . '/..' . '/bilfeldt/laravel-route-statistics/src/Http/Middleware/RouteStatisticsMiddleware.php',
+        'Bilfeldt\\LaravelRouteStatistics\\Jobs\\CreateLog' => __DIR__ . '/..' . '/bilfeldt/laravel-route-statistics/src/Jobs/CreateLog.php',
+        'Bilfeldt\\LaravelRouteStatistics\\LaravelRouteStatisticsServiceProvider' => __DIR__ . '/..' . '/bilfeldt/laravel-route-statistics/src/LaravelRouteStatisticsServiceProvider.php',
+        'Bilfeldt\\LaravelRouteStatistics\\Models\\RouteStatistic' => __DIR__ . '/..' . '/bilfeldt/laravel-route-statistics/src/Models/RouteStatistic.php',
+        'Bilfeldt\\RequestLogger\\Commands\\PruneRequestLogsCommand' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src/Commands/PruneRequestLogsCommand.php',
+        'Bilfeldt\\RequestLogger\\Contracts\\RequestLoggerInterface' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src/Contracts/RequestLoggerInterface.php',
+        'Bilfeldt\\RequestLogger\\Database\\Factories\\RequestLogFactory' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/database/factories/RequestLogFactory.php',
+        'Bilfeldt\\RequestLogger\\Listeners\\LogRequest' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src/Listeners/LogRequest.php',
+        'Bilfeldt\\RequestLogger\\Middleware\\LogRequestMiddleware' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src/Middleware/LogRequestMiddleware.php',
+        'Bilfeldt\\RequestLogger\\Models\\RequestLog' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src/Models/RequestLog.php',
+        'Bilfeldt\\RequestLogger\\NullLogger' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src/NullLogger.php',
+        'Bilfeldt\\RequestLogger\\RequestLogger' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src/RequestLogger.php',
+        'Bilfeldt\\RequestLogger\\RequestLoggerFacade' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src/RequestLoggerFacade.php',
+        'Bilfeldt\\RequestLogger\\RequestLoggerServiceProvider' => __DIR__ . '/..' . '/bilfeldt/laravel-request-logger/src/RequestLoggerServiceProvider.php',
         'BladeUI\\Heroicons\\BladeHeroiconsServiceProvider' => __DIR__ . '/..' . '/blade-ui-kit/blade-heroicons/src/BladeHeroiconsServiceProvider.php',
         'BladeUI\\Icons\\BladeIconsServiceProvider' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php',
         'BladeUI\\Icons\\Components\\Icon' => __DIR__ . '/..' . '/blade-ui-kit/blade-icons/src/Components/Icon.php',

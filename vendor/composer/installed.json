@@ -138,6 +138,70 @@
             "install-path": "../althinect/filament-spatie-roles-permissions"
         },
         {
+            "name": "amendozaaguiar/filament-route-statistics",
+            "version": "4.2",
+            "version_normalized": "4.2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/amendozaaguiar/filament-route-statistics.git",
+                "reference": "fd3a310eaee155d178c2043e6e023cb95c225bc9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/amendozaaguiar/filament-route-statistics/zipball/fd3a310eaee155d178c2043e6e023cb95c225bc9",
+                "reference": "fd3a310eaee155d178c2043e6e023cb95c225bc9",
+                "shasum": ""
+            },
+            "require": {
+                "bilfeldt/laravel-route-statistics": "^4.2",
+                "filament/filament": "^3.0-stable",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "filament/upgrade": "^3.0-stable"
+            },
+            "time": "2025-06-17T00:24:18+00:00",
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Amendozaaguiar\\FilamentRouteStatistics\\FilamentRouteStatisticsServiceProvider"
+                    ]
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Amendozaaguiar\\FilamentRouteStatistics\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anderson Mendoza Aguiar",
+                    "email": "amendozaaguiar@outlook.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Filament route statictics viewer",
+            "keywords": [
+                "amendozaaguiar",
+                "filament",
+                "laravel",
+                "route",
+                "statistics"
+            ],
+            "support": {
+                "issues": "https://github.com/amendozaaguiar/filament-route-statistics/issues",
+                "source": "https://github.com/amendozaaguiar/filament-route-statistics/tree/4.2"
+            },
+            "install-path": "../amendozaaguiar/filament-route-statistics"
+        },
+        {
             "name": "anourvalar/eloquent-serialize",
             "version": "1.3.5",
             "version_normalized": "1.3.5.0",
@@ -677,6 +741,223 @@
                 }
             ],
             "install-path": "../barryvdh/laravel-dompdf"
+        },
+        {
+            "name": "bilfeldt/laravel-correlation-id",
+            "version": "v1.5.0",
+            "version_normalized": "1.5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bilfeldt/laravel-correlation-id.git",
+                "reference": "0a12cddc777d84529b798f5c1105bbd227c7e2e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bilfeldt/laravel-correlation-id/zipball/0a12cddc777d84529b798f5c1105bbd227c7e2e8",
+                "reference": "0a12cddc777d84529b798f5c1105bbd227c7e2e8",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^10.0 || ^11.0 || ^12.0",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^7.8 || ^8.0",
+                "orchestra/testbench": "^8.0 || ^9.0 || ^10.0",
+                "phpunit/phpunit": "^10.0 || ^11.0"
+            },
+            "time": "2025-11-28T18:40:34+00:00",
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Bilfeldt\\CorrelationId\\CorrelationIdServiceProvider"
+                    ]
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Bilfeldt\\CorrelationId\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anders Bilfeldt",
+                    "email": "abilfeldt@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Deal with Request-ID and Correlation-ID in Laravel applications",
+            "homepage": "https://github.com/bilfeldt/laravel-correlation-id",
+            "keywords": [
+                "bilfeldt",
+                "correlation id",
+                "request id"
+            ],
+            "support": {
+                "issues": "https://github.com/bilfeldt/laravel-correlation-id/issues",
+                "source": "https://github.com/bilfeldt/laravel-correlation-id"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/bilfeldt",
+                    "type": "github"
+                }
+            ],
+            "install-path": "../bilfeldt/laravel-correlation-id"
+        },
+        {
+            "name": "bilfeldt/laravel-request-logger",
+            "version": "v3.6.0",
+            "version_normalized": "3.6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bilfeldt/laravel-request-logger.git",
+                "reference": "40c22bbddc469a38dee1a4574bcd809ada352813"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bilfeldt/laravel-request-logger/zipball/40c22bbddc469a38dee1a4574bcd809ada352813",
+                "reference": "40c22bbddc469a38dee1a4574bcd809ada352813",
+                "shasum": ""
+            },
+            "require": {
+                "bilfeldt/laravel-correlation-id": "^1.0",
+                "ext-json": "*",
+                "illuminate/contracts": "^10.0 || ^11.0 || ^12.0",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^7.2 || ^8.0",
+                "orchestra/testbench": "^8.0 || ^9.0 || ^10.0",
+                "phpunit/phpunit": "^10.0 || ^11.5.3",
+                "spatie/laravel-ray": "^1.32"
+            },
+            "time": "2025-02-17T09:51:14+00:00",
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "RequestLogger": "Bilfeldt\\RequestLogger\\RequestLoggerFacade"
+                    },
+                    "providers": [
+                        "Bilfeldt\\RequestLogger\\RequestLoggerServiceProvider"
+                    ]
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Bilfeldt\\RequestLogger\\": "src",
+                    "Bilfeldt\\RequestLogger\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anders Bilfeldt",
+                    "email": "abilfeldt@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Log Laravel application request and responses for debugging or statistics",
+            "homepage": "https://github.com/bilfeldt/laravel-request-logger",
+            "keywords": [
+                "bilfeldt",
+                "laravel",
+                "laravel-request-logger"
+            ],
+            "support": {
+                "issues": "https://github.com/bilfeldt/laravel-route-statistics/issues",
+                "source": "https://github.com/bilfeldt/laravel-route-statistics"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/bilfeldt",
+                    "type": "github"
+                }
+            ],
+            "install-path": "../bilfeldt/laravel-request-logger"
+        },
+        {
+            "name": "bilfeldt/laravel-route-statistics",
+            "version": "v4.2.1",
+            "version_normalized": "4.2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bilfeldt/laravel-route-statistics.git",
+                "reference": "9b314244248f43615049f102ba563ed5b7858db0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bilfeldt/laravel-route-statistics/zipball/9b314244248f43615049f102ba563ed5b7858db0",
+                "reference": "9b314244248f43615049f102ba563ed5b7858db0",
+                "shasum": ""
+            },
+            "require": {
+                "bilfeldt/laravel-request-logger": "^3.0",
+                "illuminate/contracts": "^10.0 || ^11.0 || ^12.0",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^7.2 || ^8.0",
+                "orchestra/testbench": "^8.0 || ^9.0 || ^10.0",
+                "phpunit/phpunit": "^10.0 || ^11.5.3"
+            },
+            "time": "2025-04-12T20:18:06+00:00",
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Bilfeldt\\LaravelRouteStatistics\\LaravelRouteStatisticsServiceProvider"
+                    ]
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Bilfeldt\\LaravelRouteStatistics\\": "src",
+                    "Bilfeldt\\LaravelRouteStatistics\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anders Bilfeldt",
+                    "email": "abilfeldt@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Log statistics about route usage per user/team",
+            "homepage": "https://github.com/bilfeldt/laravel-route-statistics",
+            "keywords": [
+                "bilfeldt",
+                "laravel",
+                "route",
+                "statistics"
+            ],
+            "support": {
+                "issues": "https://github.com/bilfeldt/laravel-route-statistics/issues",
+                "source": "https://github.com/bilfeldt/laravel-route-statistics"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/bilfeldt",
+                    "type": "github"
+                }
+            ],
+            "install-path": "../bilfeldt/laravel-route-statistics"
         },
         {
             "name": "blade-ui-kit/blade-heroicons",

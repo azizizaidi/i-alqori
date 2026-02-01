@@ -1,0 +1,63 @@
+{
+    "name": "bilfeldt/laravel-request-logger",
+    "description": "Log Laravel application request and responses for debugging or statistics",
+    "keywords": [
+        "bilfeldt",
+        "laravel",
+        "laravel-request-logger"
+    ],
+    "homepage": "https://github.com/bilfeldt/laravel-request-logger",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/bilfeldt/laravel-route-statistics/issues",
+        "source": "https://github.com/bilfeldt/laravel-route-statistics"
+    },
+    "authors": [
+        {
+            "name": "Anders Bilfeldt",
+            "email": "abilfeldt@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+        "illuminate/contracts": "^10.0 || ^11.0 || ^12.0",
+        "ext-json": "*",
+        "bilfeldt/laravel-correlation-id": "^1.0"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^7.2 || ^8.0",
+        "orchestra/testbench": "^8.0 || ^9.0 || ^10.0",
+        "phpunit/phpunit": "^10.0 || ^11.5.3",
+        "spatie/laravel-ray": "^1.32"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bilfeldt\\RequestLogger\\": "src",
+            "Bilfeldt\\RequestLogger\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bilfeldt\\RequestLogger\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/testbench package:test --no-coverage",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bilfeldt\\RequestLogger\\RequestLoggerServiceProvider"
+            ],
+            "aliases": {
+                "RequestLogger": "Bilfeldt\\RequestLogger\\RequestLoggerFacade"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
