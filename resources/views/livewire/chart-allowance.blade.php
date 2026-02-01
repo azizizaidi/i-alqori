@@ -13,6 +13,7 @@
             <option value="2023">2023</option>
             <option value="2024">2024</option>
             <option value="2025">2025</option>
+            <option value="2026">2026</option>
         </select>
     </div>
 
@@ -81,6 +82,7 @@ var alwsep25 = <?php echo $reportclasses->where('month','09-2025')->whereNull('d
 var alwoct25 = <?php echo $reportclasses->where('month','10-2025')->whereNull('deleted_at')->sum('allowance') ?? ''; ?>;
 var alwnov25 = <?php echo $reportclasses->where('month','11-2025')->whereNull('deleted_at')->sum('allowance') ?? ''; ?>;
 var alwdec25 = <?php echo $reportclasses->where('month','12-2025')->whereNull('deleted_at')->sum('allowance') ?? ''; ?>;
+var alwjan26 = <?php echo $reportclasses->where('month','01-2026')->whereNull('deleted_at')->sum('allowance') ?? ''; ?>;
 
 
 // Define the chart data and options
@@ -162,6 +164,11 @@ function updateChart() {
     
     allowanceData = [alwjan25,alwfeb25,alwmar25, alwapr25, alwmay25, alwjun25,alwjul25,alwogs25,alwsep25,alwoct25,alwnov25,alwdec25];
     break;
+    case '2026':
+    
+    allowanceData = [alwjan26];
+    break;
+    
     default:
       // Handle default case or show an error message
       break;
