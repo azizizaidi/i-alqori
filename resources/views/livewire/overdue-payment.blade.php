@@ -168,7 +168,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div> class="w-1/3 p-2">
+                            <div class="w-1/3 p-2">
                                 <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                                     <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                                         <div class="overflow-hidden">
@@ -183,8 +183,16 @@
                                                     @foreach (['01-2026'] as $month)
                                                     <tr class="border-b dark:border-neutral-500">
                                                         <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">{{ $month }}</td>
+                                                        <td class="whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500">RM{{ $reportclasses->where('month', $month)->where('status', 0)->sum('fee_student') ?? '' }}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
                     </article>
 
                     <!-- Panel #2 -->
@@ -312,14 +320,22 @@
                                                 <tbody>
                                                     @foreach (['01-2026'] as $month)
                                                     <tr class="border-b dark:border-neutral-500">
-                                                        <td class="whitespace
-                             
+                                                        <td class="whitespace-nowrap border-r px-6 py-4 font-medium dark:border-neutral-500">{{ $month }}</td>
+                                                        <td class="whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500">RM{{ $reportclasses->where('month', $month)->where('status', 3)->sum('fee_student') ?? '' }}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </article>
 
                     <!-- Panel #3 -->
-                    <article
-                        id=" tabpanel-3"
-                                                            class="w-full bg-white rounded-2xl shadow-xl min-[480px]:flex items-stretch focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
+                  
+                  <article id="tabpanel-3"class="w-full bg-white rounded-2xl shadow-xl min-[480px]:flex items-stretch focus-visible:outline-none focus-visible:ring focus-visible:ring-indigo-300"
                                                             role="tabpanel"
                                                             tabindex="0"
                                                             aria-labelledby="tab-3"
