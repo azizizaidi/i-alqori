@@ -1,0 +1,90 @@
+# Laravel .gitignore
+
+# Composer
+/vendor
+/composer.phar
+/composer.lock
+
+# Node.js
+/node_modules
+/npm-debug.log
+/yarn-error.log
+/yarn.lock
+.pnpm-debug.log
+
+# Build outputs
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/.vite
+
+# Environment files
+/.env
+/.env.local
+/.env.*.local
+.env.production
+
+# IDE
+/.idea
+/.vscode
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+*.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+laravel-*.log
+
+# Testing
+/.phpunit.cache
+/.phpunit.result.cache
+/coverage
+.phpunit.*
+
+# Laravel specific
+/bootstrap/cache/*
+!bootstrap/cache/.gitignore
+/storage/app/*
+!storage/app/public/.gitignore
+/storage/framework/*
+!storage/framework/cache/.gitignore
+!storage/framework/sessions/.gitignore
+!storage/framework/views/.gitignore
+!storage/framework/testing/.gitignore
+/storage/logs/*
+!storage/logs/.gitignore
+/storage/debugbar/*
+!storage/debugbar/.gitignore
+
+# Database
+*.sqlite
+*.sqlite3
+/db/database.sqlite
+
+# Cache
+/.cache
+/build/cache
+var/cache
+
+# Debugbar
+/_ide_helper.php
+_ide_helper_models.php
+
+# PhpStorm
+.phpunit*
+
+# Docker
+docker-compose.override.yml
+.phpunit
+
+# Filament
+/.filament

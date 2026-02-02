@@ -266,9 +266,9 @@ class ListFee extends Component implements HasForms, HasTable
                Action::make('bayar')
                        ->icon('heroicon-m-credit-card')
                        ->color('danger')
-                       ->visible(fn(): bool => auth()->user()->can('view-any User'))
+                       ->visible(fn(): bool => auth()->user()->can('view-any User')),
                      // ->visible(fn () => in_array(auth()->user()->role_id, [1, 5]))
-                       ->url(fn (ReportClass $pay): string => route('toyyibpay.createBill',$pay)),
+                      // ->url(fn (ReportClass $pay): string => route('toyyibpay.createBill',$pay)),
            
               Action::make('sunting')
                     ->icon('heroicon-o-pencil-square')
