@@ -1,7 +1,0 @@
-{
-    "type": "module",
-    "devDependencies": {
-        "esbuild": "^0.18.17",
-        "flatpickr": "^4.6.13"
-    }
-}
